@@ -11,10 +11,10 @@
 </script>
 
 <main>
-  <img alt="Wails logo" id="logo" src="{logo}">
+    <!-- <img alt="Wails logo" id="logo" src="{logo}"> -->
   <div class="result" id="result">{resultText}</div>
   <div class="input-box" id="input">
-    <input autocomplete="off" bind:value={name} class="input" id="name" type="text"/>
+    <textarea autocomplete="off" bind:value={name} id="name" />
     <button class="btn" on:click={greet}>Greet</button>
   </div>
 </main>
@@ -74,6 +74,14 @@
   .input-box .input:focus {
     border: none;
     background-color: rgba(255, 255, 255, 1);
+  }
+
+  textarea {
+    color: white;
+    background: transparent;
+    resize: none;
+    border: 0 none;
+    width: 100%;
   }
 
 </style>

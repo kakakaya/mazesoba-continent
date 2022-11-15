@@ -1,4 +1,4 @@
-module changeme
+module mazesoba
 
 go 1.18
 

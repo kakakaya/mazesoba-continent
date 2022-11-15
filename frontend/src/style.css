@@ -1,5 +1,6 @@
 html {
-    background-color: rgba(27, 38, 54, 1);
+    background-color: rgba(27, 38, 54, 10); /* dev */
+    /* background-color: rgba(27, 38, 54, 0); prod*/
     text-align: center;
     color: white;
 }
