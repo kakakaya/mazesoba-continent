@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"embed"
+	"io/ioutil"
 	"log"
 
 	"github.com/BurntSushi/toml"
@@ -24,43 +25,23 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	configFile, _ := xdg.ConfigFile("mazesoba-continent/config.toml2")
-	var config Config
-	a, err := toml.DecodeFile(configFile, &config)
-	log.Println(a)
+	configPath := "mazesoba-continent/config.toml"
+	config, err := loadOrCreateConfig(configPath)
 	if err != nil {
-		log.Printf("Can't open or decode config file: %s", configFile)
-		window := windowConfig{
-			Width:       400,
-			Height:      200,
-			AlwaysOnTop: true,
-			Transparent: true,
-		}
-		defaultConfig := Config{
-			Window: window,
-		}
-		buf := new(bytes.Buffer)
-		err = toml.NewEncoder(buf).Encode(defaultConfig)
-		if err != nil {
-			log.Println(err)
-		}
-		log.Printf(
-			"========Default config toml========\n%s================================",
-			buf.String(),
-		)
-		log.Printf("%+v\n", defaultConfig)
-		config = defaultConfig
+		log.Fatal(err)
 	}
-	log.Fatal("bye bye")
+
+	app.config = config
+	log.Println(app.config)
 
 	// Create application with options
 	err = wails.Run(&options.App{
 		Title: "まぜそば大陸",
 
-		Width:  300,
-		Height: 200,
+		Width:  config.Window.Width,
+		Height: config.Window.Height,
 
-		AlwaysOnTop: true,
+		AlwaysOnTop: config.Window.AlwaysOnTop,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -97,4 +78,37 @@ func main() {
 	if err != nil {
 		println("Error:", err.Error())
 	}
+}
+
+// loadOrCreateConfig ...
+func loadOrCreateConfig(configPath string) (Config, error) {
+	var config Config
+	configFile, err := xdg.ConfigFile(configPath)
+	if err != nil {
+		log.Fatalf("Can't open config file: %s", configPath)
+	}
+	_, err = toml.DecodeFile(configFile, &config)
+	if err != nil {
+		log.Printf("Config file not found, initializing: %s", configFile)
+		defaultConfig := Config{
+			Window: windowConfig{
+				Width:       400,
+				Height:      200,
+				AlwaysOnTop: true,
+				Transparent: true,
+			},
+		}
+		buf := new(bytes.Buffer)
+		err = toml.NewEncoder(buf).Encode(defaultConfig)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Printf(
+			"========Wrote default config toml========\n%s\n================================",
+			buf.String(),
+		)
+		ioutil.WriteFile(configFile, buf.Bytes(), 0644)
+		config = defaultConfig
+	}
+	return config, nil
 }

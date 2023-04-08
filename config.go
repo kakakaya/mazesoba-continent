@@ -1,8 +1,18 @@
 package main
 
+import (
+	"github.com/bluesky-social/indigo/xrpc"
+)
+
 type Config struct {
-	Window     windowConfig
-	Credential credConfig
+	General  generalConfig
+	Window   windowConfig
+	AuthInfo xrpc.AuthInfo
+	Kakikomi kakikomiConfig
+}
+
+type generalConfig struct {
+	// TBW
 }
 
 type windowConfig struct {
@@ -12,6 +22,7 @@ type windowConfig struct {
 	Transparent bool
 }
 
-type credConfig struct {
+type kakikomiConfig struct {
 	// TBW
+	// a.k.a kakikomi.txt
 }
