@@ -1,21 +1,32 @@
 <script>
   import logo from './assets/images/logo-universal.png'
-  import {Greet} from '../wailsjs/go/main/App.js'
+  import {Chikuwa, Greet, Post} from '../wailsjs/go/main/App.js'
 
   let resultText = "Please enter your name below 👇"
-  let name
+  let text
 
   function greet() {
-    Greet(name).then(result => resultText = result)
+    Greet(text).then(result => resultText = result)
   }
+
+ function post() {
+     Post(text).then(result => resultText = result)
+ }
+
+ function chikuwa() {
+     Chikuwa().then(result => resultText = result)
+ }
+
 </script>
 
 <main>
     <!-- <img alt="Wails logo" id="logo" src="{logo}"> -->
   <div class="result" id="result">{resultText}</div>
   <div class="input-box" id="input">
-    <textarea autocomplete="off" bind:value={name} id="name" />
+    <textarea autocomplete="off" bind:value={text} id="name" />
     <button class="btn" on:click={greet}>Greet</button>
+    <button class="btn" on:click={post}>Post</button>
+    <button class="btn" on:click={chikuwa}>ちくわ。</button>
   </div>
 </main>
 

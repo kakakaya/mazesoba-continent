@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -65,9 +66,10 @@ func (a *App) Post(text string) string {
 func (a *App) Chikuwa() string {
 	text := fmt.Sprintf("ちくわ。 %s", time.Now().Format(time.RFC3339))
 	res, err := PostFeed(a.xrpcc, text)
+
 	if err != nil {
+		log.Println(err)
 		return fmt.Sprintf(err.Error())
 	}
 	return res
 }
-
