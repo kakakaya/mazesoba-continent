@@ -30,6 +30,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
+      - run: go version
       - run: go mod download
       - name: Run tests
         run: go test -v ./...
