@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -29,12 +32,58 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
 	// Build xrpc.Client
+	var auth *xrpc.AuthInfo
+
+	cred := a.config.Credential
+	auth, err := createSession(cred.Host, cred.Identifier, cred.Password)
+
+	if err != nil {
+		log.Fatal("Failed creating session, bad identifier or password?: %v", err)
+	}
+
 	xrpcc := &xrpc.Client{
 		Client: NewHttpClient(),
-		Host:   "https://bsky.social", // only bsky.social is supported for now
-		Auth:   &a.config.AuthInfo,
+		Host:   cred.Host,
+		Auth:   auth,
 	}
 	a.xrpcc = xrpcc
+}
+
+// createSession calls "/xrpc/com.atproto.server.createSession" and returns xrpc.AuthInfo.
+func createSession(host string, identifier string, password string) (*xrpc.AuthInfo, error) {
+	payload := fmt.Sprintf(`{"identifier": "%s", "password": "%s"}`, identifier, password)
+	if host == "" {
+		return nil, fmt.Errorf("Error: host not set. Check [Credential] section in config file.")
+	}
+
+	url := fmt.Sprintf("%s/xrpc/com.atproto.server.createSession", host)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(payload)))
+	if err != nil {
+		return nil, fmt.Errorf("Error creating HTTP request:", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Error: Unexpected status code: %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Error reading response body: %v", err)
+	}
+	var auth xrpc.AuthInfo
+	err = json.Unmarshal(body, &auth)
+	if err != nil {
+		return nil, fmt.Errorf("Error decoding JSON response: %v", err)
+	}
+
+	return &auth, nil
 }
 
 func NewHttpClient() *http.Client {
