@@ -10,16 +10,27 @@ on:
     branches: [ "main" ]
 
 jobs:
+  test-go:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        go-version: [1.19, 1.20]
 
-  build:
-    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: 1.20
+      - name: Install linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update -y && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev build-essential pkg-config
 
-    - name: Test
-      run: go test -v ./...
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Run tests
+        working-directory: ./v2
+        run: go test -v ./...
