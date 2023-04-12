@@ -9,8 +9,8 @@ import (
 	comatproto "github.com/bluesky-social/indigo/api/atproto"
 	appbsky "github.com/bluesky-social/indigo/api/bsky"
 	lexutil "github.com/bluesky-social/indigo/lex/util"
-	"github.com/gen2brain/beeep"
 	"github.com/bluesky-social/indigo/xrpc"
+	"github.com/gen2brain/beeep"
 )
 
 func PostFeed(xrpcc *xrpc.Client, text string) (string, error) {
@@ -20,13 +20,11 @@ func PostFeed(xrpcc *xrpc.Client, text string) (string, error) {
 		log.Fatalln(err)
 	}
 
-	// return "<MOCK URI>", nil // TEMP
-
-	auth := xrpcc.Auth
+	return "<MOCK URI>", nil // TEMP
 
 	resp, err := comatproto.RepoCreateRecord(context.TODO(), xrpcc, &comatproto.RepoCreateRecord_Input{
 		Collection: "app.bsky.feed.post",
-		Repo:       auth.Did,
+		Repo:       xrpcc.Auth.Did,
 		Record: &lexutil.LexiconTypeDecoder{&appbsky.FeedPost{
 			Text:      text,
 			CreatedAt: time.Now().Format("2006-01-02T15:04:05.000Z"),
