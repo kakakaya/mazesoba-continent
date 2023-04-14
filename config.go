@@ -9,6 +9,8 @@ import (
 	"github.com/adrg/xdg"
 )
 
+const configPath = "mazesoba-continent/config.toml"
+
 type Config struct {
 	General    generalConfig
 	Window     windowConfig

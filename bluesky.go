@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	comatproto "github.com/bluesky-social/indigo/api/atproto"
@@ -13,14 +12,13 @@ import (
 	"github.com/gen2brain/beeep"
 )
 
-func PostFeed(xrpcc *xrpc.Client, text string) (string, error) {
-	// xrpcc, err := cliutil.GetXrpcClient(ctx, true)
-	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("PostFeed: posting %s", text), "")
+func BskyFeedPost(xrpcc *xrpc.Client, text string) (string, error) {
+	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 
-	return "<MOCK URI>", nil // TEMP
+	// return "<MOCK URI>", nil // TEMP
 
 	resp, err := comatproto.RepoCreateRecord(context.TODO(), xrpcc, &comatproto.RepoCreateRecord_Input{
 		Collection: "app.bsky.feed.post",
@@ -33,6 +31,5 @@ func PostFeed(xrpcc *xrpc.Client, text string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to create post: %w", err)
 	}
-	log.Println(resp.Cid, resp.Uri)
 	return resp.Uri, nil
 }
