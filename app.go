@@ -11,6 +11,7 @@ import (
 	"time"
 
 	// cliutil "github.com/bluesky-social/indigo/cmd/gosky/util"
+	"github.com/adrg/xdg"
 	"github.com/bluesky-social/indigo/xrpc"
 )
 
@@ -19,6 +20,7 @@ type App struct {
 	config Config
 	ctx    context.Context
 	xrpcc  *xrpc.Client
+	logger *log.Logger
 }
 
 // NewApp creates a new App application struct
@@ -30,7 +32,6 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-
 	// Build xrpc.Client
 	var auth *xrpc.AuthInfo
 
@@ -38,7 +39,7 @@ func (a *App) startup(ctx context.Context) {
 	auth, err := createSession(cred.Host, cred.Identifier, cred.Password)
 
 	if err != nil {
-		log.Fatal("Failed creating session, bad identifier or password?: %v", err)
+		a.logger.Fatalf("Failed creating session, bad identifier or password?: %v", err)
 	}
 
 	xrpcc := &xrpc.Client{
@@ -104,21 +105,32 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time and current time is %s!", name, time.Now().Format(time.RFC3339))
 }
 
+
 func (a *App) Post(text string) string {
-	res, err := PostFeed(a.xrpcc, text)
+	res, err := BskyFeedPost(a.xrpcc, text)
 	if err != nil {
-		return fmt.Sprintf(err.Error())
+		errs := fmt.Sprintf("Posting error: %s", err.Error())
+		a.logger.Println(errs)
+		return errs
+
 	}
 	return res
 }
 
-func (a *App) Chikuwa() string {
-	text := fmt.Sprintf("ちくわ。 %s", time.Now().Format(time.RFC3339))
-	res, err := PostFeed(a.xrpcc, text)
+func (a *App) Chikuwa(text string) string {
+	return a.Post(fmt.Sprintf("%s %s", text, time.Now().Format(time.RFC3339)))
+}
 
-	if err != nil {
-		log.Println(err)
-		return fmt.Sprintf(err.Error())
-	}
-	return res
+func (a *App) OpenConfigDirectory() error {
+	f, _ := xdg.ConfigFile("mazesoba-continent")
+	return openDirectory(f)
+}
+
+func (a *App) OpenLogDirectory() error {
+	f, _ := xdg.CacheFile("mazesoba-continent")
+	return openDirectory(f)
+}
+
+func (a *App) GetVersion() string {
+	return Version
 }
