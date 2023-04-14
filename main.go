@@ -2,8 +2,13 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"log"
+	"os"
+	"time"
 
+	"golang.org/x/exp/slog"
+	"github.com/adrg/xdg"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -16,18 +21,36 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+const Version = "v5"
+
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	configPath := "mazesoba-continent/config.toml"
+	now := time.Now()
+	logPath, err := xdg.CacheFile(
+		fmt.Sprintf("mazesoba-continent/%d%02d%02d-%02d%02d%02d.log",
+			now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(),
+		),
+	)
+	if err != nil {
+		log.Fatalf("Can't open config file: %s", configPath)
+	}
+	logFile, err := os.Create(logPath)
+	if err != nil {
+		log.Fatalf("Can't open config file: %s", configPath)
+	}
+
+	defer logFile.Close()
+	app.logger = slog.NewLogLogger(slog.NewJSONHandler(logFile), slog.LevelInfo)
+
 	config, err := loadOrCreateConfig(configPath)
 	if err != nil {
-		log.Fatal(err)
+		app.logger.Fatal(err)
 	}
 
 	app.config = config
-	log.Println(app.config)
+	app.logger.Println(app.config)
 
 	// Create application with options
 	err = wails.Run(&options.App{
