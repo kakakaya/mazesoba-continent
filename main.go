@@ -7,21 +7,21 @@ import (
 	"os"
 	"time"
 
-	"golang.org/x/exp/slog"
 	"github.com/adrg/xdg"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
+	"golang.org/x/exp/slog"
 
-	// "github.com/wailsapp/wails/v2/pkg/options/mac"
+	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const Version = "v5"
+const Version = "v6"
 
 func main() {
 	// Create an instance of the app structure
@@ -50,7 +50,6 @@ func main() {
 	}
 
 	app.config = config
-	app.logger.Println(app.config)
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -87,6 +86,20 @@ func main() {
 			// OnSuspend func(),
 			// OnResume is called when Windows resumes from low power mode
 			// OnResume func(),
+		},
+		Mac: &mac.Options{
+			TitleBar: &mac.TitleBar{
+				// Tekitou
+				TitlebarAppearsTransparent: true,
+				HideTitle:                  false,
+				HideTitleBar:               true,
+				FullSizeContent:            false,
+				UseToolbar:                 false,
+				HideToolbarSeparator:       true,
+			},
+			// Appearance:           mac.NSAppearanceNameDarkAqua,
+			WebviewIsTransparent: true,
+			WindowIsTranslucent:  true,
 		},
 		Linux: &linux.Options{
 			WindowIsTranslucent: true,

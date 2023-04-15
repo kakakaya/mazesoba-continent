@@ -10,10 +10,6 @@ export function GetVersion() {
   return window['go']['main']['App']['GetVersion']();
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}
-
 export function OpenConfigDirectory() {
   return window['go']['main']['App']['OpenConfigDirectory']();
 }

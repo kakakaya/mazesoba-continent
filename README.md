@@ -2,9 +2,22 @@
 
 投稿力の変わらないただ一つのBlueskyクライアント。そう、まぜそば大陸ならね。
 
-Out of respect for [ラーメン大陸](https://www16.atpages.jp/nigore/soft/).
+Out of respect for [ラーメン大陸](https://forest.watch.impress.co.jp/docs/news/559014.html).
 
 ## About
+
+### 使い方
+
+初回起動すると「設定ファイルが未設定だよ」みたいなことを言うので、設定ファイルの場所を開いて `config.toml` で以下の内容を入力してください。
+
+```
+[Credential]
+  Identifier = "<ここにIdentifierを入れる>"
+  Password = "<ここにパスワードを入れる>"
+  Host = "https://bsky.social"
+```
+
+以上
 
 ### ラーメン大陸リスペクト機能
 チェックが付いた機能は実装済み(つまりまだなにもできていない)
