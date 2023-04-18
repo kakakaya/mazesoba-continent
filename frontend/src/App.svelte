@@ -14,6 +14,10 @@
         Quit
     } from '../wailsjs/runtime/runtime.js'
 
+    import {
+        GenerateDummyInviteCode,
+    } from './topping/invite-code.js'
+
     let text
     let charCounter = 0
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？"
@@ -33,12 +37,22 @@
         })
     }
 
+
+    function getDummyInviteCode() {
+        if (text === undefined | !(typeof text === 'string' && text.startsWith('bsky-'))) {
+            text = GenerateDummyInviteCode()
+        } else {
+            text += "\n" + GenerateDummyInviteCode()
+        }
+
+    }
+
     function earthquake() {
         text = "地震だ!"
     }
 
     function version() {
-        GetVersion().then(version => text = "まぜそば大陸バージョン" + version + "が浮上中")
+        GetVersion().then(version => text = "まぜそば大陸 バージョン" + version + "が浮上中")
     }
 
     function chikuwa() {
@@ -80,6 +94,7 @@
         <button class="btn" on:click={chikuwa}>ちくわ。</button>
         <button class="btn" on:click={WindowCenter}>画面中央</button>
         <button class="btn" on:click={earthquake}>地震だ！(F9)</button>
+        <button class="btn" on:click={getDummyInviteCode}>嘘招待コード生成</button>
         <button class="btn" on:click={version}>バージョン</button>
         <button class="btn" on:click={OpenConfigDirectory}>設定の場所を開く(Ctrl+,)</button>
         <button class="btn" on:click={OpenLogDirectory}>ログの場所を開く</button>
