@@ -3,17 +3,16 @@ package main
 import (
 	"embed"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
 	"github.com/adrg/xdg"
+	"golang.org/x/exp/slog"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
-	"golang.org/x/exp/slog"
-
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
@@ -21,32 +20,34 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const Version = "v6"
+const Version = "v7"
 
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
 	now := time.Now()
+
 	logPath, err := xdg.CacheFile(
 		fmt.Sprintf("mazesoba-continent/%d%02d%02d-%02d%02d%02d.log",
 			now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(),
 		),
 	)
 	if err != nil {
-		log.Fatalf("Can't open config file: %s", configPath)
+		slog.Error("Can't open log file path", "logPath", logPath)
 	}
 	logFile, err := os.Create(logPath)
 	if err != nil {
-		log.Fatalf("Can't open config file: %s", configPath)
+		slog.Error("Can't create log file", "logPath", logPath)
 	}
 
 	defer logFile.Close()
-	app.logger = slog.NewLogLogger(slog.NewJSONHandler(logFile), slog.LevelInfo)
+	app.logger = slog.New(slog.NewJSONHandler(logFile))
 
 	config, err := loadOrCreateConfig(configPath)
 	if err != nil {
-		app.logger.Fatal(err)
+		app.logger.Error("Error on loadOrCreateConfig", "error", err)
+		panic(err)
 	}
 
 	app.config = config
