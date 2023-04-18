@@ -6,22 +6,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"strings"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/adrg/xdg"
 	"github.com/bluesky-social/indigo/xrpc"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/exp/slog"
+	"github.com/gen2brain/beeep"
 )
 
 // App struct
 type App struct {
-	config Config
-	ctx    context.Context
-	xrpcc  *xrpc.Client
-	logger *log.Logger
+	config      Config
+	ctx         context.Context
+	xrpcc       *xrpc.Client
+	logger      *slog.Logger
+	environment runtime.EnvironmentInfo
 }
 
 // dialogResults is used for casting Dialog's response to boolean. Note that keys are lowercase.
@@ -46,12 +49,18 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.environment = runtime.Environment(ctx)
+	if a.environment.BuildType == "dev" {
+		// Use stdout in dev mode
+		a.logger = slog.New(slog.NewTextHandler(os.Stdout))
+	}
+	a.logger.Info("Startup", "environment", a.environment)
+
 	// Build xrpc.Client
 	var auth *xrpc.AuthInfo
-
 	cred := a.config.Credential
 	if cred.Host == "" || cred.Identifier == "" || cred.Password == "" {
-		a.logger.Println("Credentials not set!")
+		a.logger.Warn("Credentials not set!")
 		result, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:          runtime.QuestionDialog,
 			Title:         "認証情報がないよ",
@@ -59,13 +68,13 @@ func (a *App) startup(ctx context.Context) {
 			DefaultButton: "Yes",
 		})
 		if err != nil {
-			a.logger.Fatalln("Error creds not set dialog: ", err)
+			a.logger.Warn("Error creds not set dialog", "error",  err)
 		}
-		a.logger.Println(result)
+		a.logger.Info(result)
 		if dialogResults[strings.ToLower(result)] {
 			a.OpenConfigDirectory()
 		}
-		a.logger.Fatalln("Missing credentials")
+		a.logger.Warn("Missing credentials")
 	}
 
 	auth, err := createSession(cred.Host, cred.Identifier, cred.Password)
@@ -80,14 +89,14 @@ func (a *App) startup(ctx context.Context) {
 		})
 
 		if err != nil {
-			a.logger.Fatalln("Error creds not set dialog: ", err)
+			a.logger.Warn("Error creds not set dialog", "error", err)
 		}
-		a.logger.Println(result)
+		a.logger.Info(result)
 		if dialogResults[strings.ToLower(result)] {
 			a.OpenConfigDirectory()
 		}
 
-		a.logger.Fatalf("Failed creating session, bad identifier or password?: %v", err)
+		a.logger.Warn("Failed creating session, bad identifier or password?", "error", err)
 		panic(err)
 	}
 
@@ -150,14 +159,19 @@ func NewHttpClient() *http.Client {
 }
 
 func (a *App) Post(text string) string {
-	a.logger.Println("Post: ", text)
+	a.logger.Info("Post", "text", text)
+	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
+
+	if a.environment.BuildType == "dev" {
+		return "<MOCK URI>"
+	}
 	res, err := BskyFeedPost(a.xrpcc, text)
 	if err != nil {
 		errs := fmt.Sprintf("Posting error: %s", err.Error())
-		a.logger.Println(errs)
+		a.logger.Error("Post: Error on BskyFeedPost", "error", errs)
 		return errs
 	}
-	a.logger.Println("Post result: ", res)
+	a.logger.Info("Posted", "result", res)
 	return res
 }
 
@@ -167,13 +181,13 @@ func (a *App) Chikuwa(text string) string {
 
 func (a *App) OpenConfigDirectory() error {
 	f, _ := xdg.ConfigFile("mazesoba-continent")
-	a.logger.Println("OpenConfigDirectory: ", f)
+	a.logger.Info("OpenConfigDirectory", "path", f)
 	return openDirectory(f)
 }
 
 func (a *App) OpenLogDirectory() error {
 	f, _ := xdg.CacheFile("mazesoba-continent")
-	a.logger.Println("OpenLogDirectory: ", f)
+	a.logger.Info("OpenLogDirectory", "path", f)
 	return openDirectory(f)
 }
 

@@ -9,17 +9,9 @@ import (
 	appbsky "github.com/bluesky-social/indigo/api/bsky"
 	lexutil "github.com/bluesky-social/indigo/lex/util"
 	"github.com/bluesky-social/indigo/xrpc"
-	"github.com/gen2brain/beeep"
 )
 
 func BskyFeedPost(xrpcc *xrpc.Client, text string) (string, error) {
-	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
-	if err != nil {
-		return "", err
-	}
-
-	// return "<MOCK URI>", nil // TEMP
-
 	resp, err := comatproto.RepoCreateRecord(context.TODO(), xrpcc, &comatproto.RepoCreateRecord_Input{
 		Collection: "app.bsky.feed.post",
 		Repo:       xrpcc.Auth.Did,
