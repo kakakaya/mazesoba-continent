@@ -10,11 +10,14 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/menu"
+	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -34,11 +37,11 @@ func main() {
 		),
 	)
 	if err != nil {
-		slog.Error("Can't open log file path", "logPath", logPath)
+		slog.Error("Can't open log file path", "logPath", logPath) // will it happen?
 	}
 	logFile, err := os.Create(logPath)
 	if err != nil {
-		slog.Error("Can't create log file", "logPath", logPath)
+		slog.Error("Can't create log file", "logPath", logPath) // will it happen? #2
 	}
 
 	defer logFile.Close()
@@ -51,6 +54,27 @@ func main() {
 	}
 
 	app.config = config
+
+	// menu ================
+	AppMenu := menu.NewMenu()
+	FileMenu := AppMenu.AddSubmenu("ファイル")
+	// FileMenu.AddText("&Open", keys.CmdOrCtrl("o"), openFile)
+	FileMenu.AddText("&Open", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
+		app.logger.Info("It called!")
+	})
+	FileMenu.AddSeparator()
+	FileMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
+		runtime.Quit(app.ctx)
+	})
+	CommandMenu := AppMenu.AddSubmenu("技")
+	CommandMenu.AddText("ちくわ。", keys.OptionOrAlt("c"), func(cd *menu.CallbackData) {
+		slog.Info("chikuwa", "cd", cd)
+		app.Post("ちくわ。")
+	})
+
+	if app.environment.Platform == "darwin" {
+		AppMenu.Append(menu.EditMenu()) // on macos platform, we should append EditMenu to enable Cmd+C,Cmd+V,Cmd+Z... shortcut
+	}
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -70,6 +94,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
 
 		OnStartup: app.startup,
+		Menu: AppMenu,
 		Bind: []interface{}{
 			app,
 		},
