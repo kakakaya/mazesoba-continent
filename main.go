@@ -58,18 +58,37 @@ func main() {
 	// menu ================
 	AppMenu := menu.NewMenu()
 	FileMenu := AppMenu.AddSubmenu("ファイル")
-	// FileMenu.AddText("&Open", keys.CmdOrCtrl("o"), openFile)
-	FileMenu.AddText("&Open", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
-		app.logger.Info("It called!")
-	})
-	FileMenu.AddSeparator()
-	FileMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("Quit", keys.Key("Escape"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
 	})
+	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
+		app.OpenConfigDirectory()
+	})
+	FileMenu.AddText("ログの場所を開く", keys.CmdOrCtrl("."), func(_ *menu.CallbackData) {
+		app.OpenLogDirectory()
+	})
+
 	CommandMenu := AppMenu.AddSubmenu("技")
-	CommandMenu.AddText("ちくわ。", keys.OptionOrAlt("c"), func(cd *menu.CallbackData) {
-		slog.Info("chikuwa", "cd", cd)
-		app.Post("ちくわ。")
+	CommandMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-post")
+	})
+	CommandMenu.AddText("ちくわ。", keys.OptionOrAlt("c"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-chikuwa")
+	})
+	CommandMenu.AddText("地震だ！", keys.OptionOrAlt("F9"), func(_ *menu.CallbackData) {
+		app.Chikuwa("地震だ！")
+	})
+	CommandMenu.AddSubmenu("バージョン")
+	CommandMenu.AddText("バージョン", keys.OptionOrAlt("v"), func(_ *menu.CallbackData) {
+		app.Chikuwa("")
+	})
+	BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
+	BlueskyCommandMenu.AddText("偽招待コード生成", nil, func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-appendDummyInviteCode")
+	})
+	WindowMenu := AppMenu.AddSubmenu("Window")
+	WindowMenu.AddText("中央に移動する", nil, func(_ *menu.CallbackData) {
+		runtime.WindowCenter(app.ctx)
 	})
 
 	if app.environment.Platform == "darwin" {
@@ -94,7 +113,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
 
 		OnStartup: app.startup,
-		Menu: AppMenu,
+		Menu:      AppMenu,
 		Bind: []interface{}{
 			app,
 		},
