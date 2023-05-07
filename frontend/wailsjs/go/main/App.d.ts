@@ -10,3 +10,5 @@ export function OpenConfigDirectory():Promise<void>;
 export function OpenLogDirectory():Promise<void>;
 
 export function Post(arg1:string):Promise<string>;
+
+export function PostAndForget(arg1:string):Promise<void>;

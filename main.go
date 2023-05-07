@@ -10,11 +10,14 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/menu"
+	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -34,11 +37,11 @@ func main() {
 		),
 	)
 	if err != nil {
-		slog.Error("Can't open log file path", "logPath", logPath)
+		slog.Error("Can't open log file path", "logPath", logPath) // will it happen?
 	}
 	logFile, err := os.Create(logPath)
 	if err != nil {
-		slog.Error("Can't create log file", "logPath", logPath)
+		slog.Error("Can't create log file", "logPath", logPath) // will it happen? #2
 	}
 
 	defer logFile.Close()
@@ -51,6 +54,46 @@ func main() {
 	}
 
 	app.config = config
+
+	// menu ================
+	AppMenu := menu.NewMenu()
+	FileMenu := AppMenu.AddSubmenu("ファイル")
+	FileMenu.AddText("Quit", keys.Key("Escape"), func(_ *menu.CallbackData) {
+		runtime.Quit(app.ctx)
+	})
+	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
+		app.OpenConfigDirectory()
+	})
+	FileMenu.AddText("ログの場所を開く", keys.CmdOrCtrl("."), func(_ *menu.CallbackData) {
+		app.OpenLogDirectory()
+	})
+
+	CommandMenu := AppMenu.AddSubmenu("技")
+	CommandMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-post")
+	})
+	CommandMenu.AddText("ちくわ。", keys.OptionOrAlt("c"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-chikuwa")
+	})
+	CommandMenu.AddText("地震だ！", keys.OptionOrAlt("F9"), func(_ *menu.CallbackData) {
+		app.Chikuwa("地震だ！")
+	})
+	CommandMenu.AddSubmenu("バージョン")
+	CommandMenu.AddText("バージョン", keys.OptionOrAlt("v"), func(_ *menu.CallbackData) {
+		app.Chikuwa("")
+	})
+	BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
+	BlueskyCommandMenu.AddText("偽招待コード生成", nil, func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-appendDummyInviteCode")
+	})
+	WindowMenu := AppMenu.AddSubmenu("Window")
+	WindowMenu.AddText("中央に移動する", nil, func(_ *menu.CallbackData) {
+		runtime.WindowCenter(app.ctx)
+	})
+
+	if app.environment.Platform == "darwin" {
+		AppMenu.Append(menu.EditMenu()) // on macos platform, we should append EditMenu to enable Cmd+C,Cmd+V,Cmd+Z... shortcut
+	}
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -70,6 +113,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
 
 		OnStartup: app.startup,
+		Menu:      AppMenu,
 		Bind: []interface{}{
 			app,
 		},
