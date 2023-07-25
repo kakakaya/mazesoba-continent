@@ -63,6 +63,11 @@
         return [...segmenter.segment(string)].length;
     }
 
+    function onChange() {
+        charCounter = countGrapheme(text)
+    }
+
+
     // Setup Events
     EventsOn("call-clearText", () => {
         clearText()
@@ -80,7 +85,7 @@
 
 <main style="--wails-draggable:drag">
     <div class="input-box" id="input">
-        <textarea autocomplete="off" bind:value={text} on:input={syncText} placeholder={placeholder} id="inputbox" />
+        <textarea autocomplete="off" bind:value={text} on:input={onChange} placeholder={placeholder} id="inputbox" />
         <p id="char-counter" class="char-count">{charCounter}</p>
     </div>
     <p id="input-length"></p>
