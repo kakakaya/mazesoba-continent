@@ -45,7 +45,7 @@ func main() {
 	}
 
 	defer logFile.Close()
-	app.logger = slog.New(slog.NewJSONHandler(logFile))
+	app.logger = slog.New(slog.NewJSONHandler(logFile, nil))
 
 	config, err := loadOrCreateConfig(configPath)
 	if err != nil {
