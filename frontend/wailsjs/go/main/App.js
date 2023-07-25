@@ -21,3 +21,7 @@ export function OpenLogDirectory() {
 export function Post(arg1) {
   return window['go']['main']['App']['Post'](arg1);
 }
+
+export function PostAndForget(arg1) {
+  return window['go']['main']['App']['PostAndForget'](arg1);
+}

@@ -13,9 +13,9 @@ import (
 
 	"github.com/adrg/xdg"
 	"github.com/bluesky-social/indigo/xrpc"
+	"github.com/gen2brain/beeep"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/exp/slog"
-	"github.com/gen2brain/beeep"
 )
 
 // App struct
@@ -52,7 +52,7 @@ func (a *App) startup(ctx context.Context) {
 	a.environment = runtime.Environment(ctx)
 	if a.environment.BuildType == "dev" {
 		// Use stdout in dev mode
-		a.logger = slog.New(slog.NewTextHandler(os.Stdout))
+		a.logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
 	}
 	a.logger.Info("Startup", "environment", a.environment)
 
@@ -68,7 +68,7 @@ func (a *App) startup(ctx context.Context) {
 			DefaultButton: "Yes",
 		})
 		if err != nil {
-			a.logger.Warn("Error creds not set dialog", "error",  err)
+			a.logger.Warn("Error creds not set dialog", "error", err)
 		}
 		a.logger.Info(result)
 		if dialogResults[strings.ToLower(result)] {
@@ -173,6 +173,10 @@ func (a *App) Post(text string) string {
 	}
 	a.logger.Info("Posted", "result", res)
 	return res
+}
+
+func (a *App) PostAndForget(text string) {
+	a.Post(text)
 }
 
 func (a *App) Chikuwa(text string) string {
