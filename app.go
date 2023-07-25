@@ -52,7 +52,7 @@ func (a *App) startup(ctx context.Context) {
 	a.environment = runtime.Environment(ctx)
 	if a.environment.BuildType == "dev" {
 		// Use stdout in dev mode
-		a.logger = slog.New(slog.NewTextHandler(os.Stdout))
+		a.logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
 	}
 	a.logger.Info("Startup", "environment", a.environment)
 
