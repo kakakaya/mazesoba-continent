@@ -44,14 +44,6 @@
         text = ""
     }
 
-    function appendDummyInviteCode() {
-        if (text === undefined | !(typeof text === 'string' && text.startsWith('bsky-'))) {
-            text = GenerateDummyInviteCode()
-        } else {
-            text += "\n" + GenerateDummyInviteCode()
-        }
-    }
-
     function unicode() {
         text = ConvertRichUnicode(text, 'sansBold')
     }
@@ -77,9 +69,6 @@
     })
     EventsOn("call-chikuwa", () => {
         chikuwa()
-    })
-    EventsOn("call-appendDummyInviteCode", () => {
-        appendDummyInviteCode()
     })
 </script>
 
