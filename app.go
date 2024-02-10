@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -75,6 +75,7 @@ func (a *App) startup(ctx context.Context) {
 			a.OpenConfigDirectory()
 		}
 		a.logger.Warn("Missing credentials")
+		runtime.Quit(ctx)
 	}
 
 	auth, err := createSession(cred.Host, cred.Identifier, cred.Password)
@@ -97,7 +98,7 @@ func (a *App) startup(ctx context.Context) {
 		}
 
 		a.logger.Warn("Failed creating session, bad identifier or password?", "error", err)
-		panic(err)
+		runtime.Quit(ctx)
 	}
 
 	xrpcc := &xrpc.Client{
@@ -118,7 +119,7 @@ func createSession(host string, identifier string, password string) (*xrpc.AuthI
 	url := fmt.Sprintf("%s/xrpc/com.atproto.server.createSession", host)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(payload)))
 	if err != nil {
-		return nil, fmt.Errorf("Error creating HTTP request:", err)
+		return nil, fmt.Errorf("Error creating HTTP request: %r", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
@@ -132,7 +133,7 @@ func createSession(host string, identifier string, password string) (*xrpc.AuthI
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("Error: Unexpected status code: %d", resp.StatusCode)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("Error reading response body: %v", err)
 	}

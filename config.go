@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/BurntSushi/toml"
 	"github.com/adrg/xdg"
@@ -57,6 +57,11 @@ func loadOrCreateConfig(configPath string) (Config, error) {
 				AlwaysOnTop: true,
 				Transparent: true,
 			},
+			Credential: credConfig{
+				Identifier: "ID (e.g. example.bsky.social)",
+				Password:   "App Password (see https://tokimekibluesky-docs.vercel.app/ja/apppassword)",
+				Host:       "https://bsky.social",
+			},
 		}
 		buf := new(bytes.Buffer)
 		err = toml.NewEncoder(buf).Encode(defaultConfig)
@@ -69,7 +74,7 @@ func loadOrCreateConfig(configPath string) (Config, error) {
 			buf.String(),
 			"=========================================",
 		)
-		ioutil.WriteFile(configFile, buf.Bytes(), 0644)
+		os.WriteFile(configFile, buf.Bytes(), 0644)
 		config = defaultConfig
 	}
 	return config, nil

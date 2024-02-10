@@ -121,13 +121,7 @@ func main() {
 			BackdropType:                      windows.Acrylic,
 			DisableWindowIcon:                 false,
 			DisableFramelessWindowDecorations: false,
-			// Theme:                             windows.SystemDefault,
-			// User messages that can be customised
-			// Messages *windows.Messages
-			// OnSuspend is called when Windows enters low power mode
-			// OnSuspend func(),
-			// OnResume is called when Windows resumes from low power mode
-			// OnResume func(),
+			Theme:                             windows.SystemDefault,
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
