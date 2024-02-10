@@ -82,10 +82,7 @@ func main() {
 	CommandMenu.AddText("バージョン", keys.OptionOrAlt("v"), func(_ *menu.CallbackData) {
 		app.Chikuwa("")
 	})
-	BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
-	BlueskyCommandMenu.AddText("偽招待コード生成", nil, func(_ *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "call-appendDummyInviteCode")
-	})
+	// BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
 	WindowMenu := AppMenu.AddSubmenu("Window")
 	WindowMenu.AddText("中央に移動する", nil, func(_ *menu.CallbackData) {
 		runtime.WindowCenter(app.ctx)
