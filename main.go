@@ -3,11 +3,11 @@ package main
 import (
 	"embed"
 	"fmt"
+	"log/slog"
 	"os"
 	"time"
 
 	"github.com/adrg/xdg"
-	"golang.org/x/exp/slog"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
@@ -58,7 +58,7 @@ func main() {
 	// menu ================
 	AppMenu := menu.NewMenu()
 	FileMenu := AppMenu.AddSubmenu("ファイル")
-	FileMenu.AddText("Quit", keys.Key("Escape"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("沈没", keys.Key("Escape"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
 	})
 	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
@@ -104,30 +104,24 @@ func main() {
 			Assets: assets,
 		},
 		Frameless: true,
-		// CSSDragProperty:  "windows",
-		// CSSDragValue:     "1",
 
-		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
+		// Windows allows A: 0 or 255 only, therefore we'll use 0 for simple.
+		BackgroundColour: &options.RGBA{R: 48, G: 48, B: 48, A: 0},
 
-		OnStartup: app.startup,
-		Menu:      AppMenu,
+		OnStartup:     app.startup,
+		OnDomReady:    app.onDomReady,
+		OnBeforeClose: app.beforeClose,
+		Menu:          AppMenu,
 		Bind: []interface{}{
 			app,
 		},
 		Windows: &windows.Options{
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
-			// BackdropType:                      windows.Auto,
-			BackdropType:                      windows.Acrylic,
+			// BackdropType:         windows.None,
 			DisableWindowIcon:                 false,
-			DisableFramelessWindowDecorations: false,
-			// Theme:                             windows.SystemDefault,
-			// User messages that can be customised
-			// Messages *windows.Messages
-			// OnSuspend is called when Windows enters low power mode
-			// OnSuspend func(),
-			// OnResume is called when Windows resumes from low power mode
-			// OnResume func(),
+			DisableFramelessWindowDecorations: true, // this makes true transparent
+			Theme:                             windows.SystemDefault,
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
@@ -149,6 +143,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		app.logger.Warn("error on app close: ", err.Error())
 	}
 }

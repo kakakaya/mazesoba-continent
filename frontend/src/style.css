@@ -75,22 +75,18 @@ select {
 }
 
 body {
-    font-family: "Avenir-Roman", "Arial", "游ゴシック体", YuGothic, "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック", "Yu Gothic", sans-serif, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-}
-
-
-body {
-    margin: 0;
-    color: white;
+    /*
+    margin: 0%;
+    padding: 0%;
+    */  
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
         "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         sans-serif;
     display: flex;
     display: grid;
     background: transparent;
-    background-color: rgba(27, 38, 54, 0.1);
+    background-color: rgba(27, 38, 54, 0.5);
     text-align: center;
-    color: white;
 }
 
 @font-face {
@@ -101,23 +97,14 @@ body {
         url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
 }
 
-#app {
-    height: 100vh;
-    text-align: center;
-}
-
-.result {
-    height: 1em;
-    line-height: 2em;
-    margin: 1.5rem auto;
-}
-
-textarea {
-    color: black;
+#inputbox {
+    background: transparent;
+    color: white;
+    height: 95%;
+    width: 95%;
     resize: none;
-    border: 0 none;
-    width: 100vw;
-    height: 100vh
+    border: none;
+    outline: none;
 }
 
 .char-count {
