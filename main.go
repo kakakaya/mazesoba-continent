@@ -3,11 +3,11 @@ package main
 import (
 	"embed"
 	"fmt"
+	"log/slog"
 	"os"
 	"time"
 
 	"github.com/adrg/xdg"
-	"golang.org/x/exp/slog"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
