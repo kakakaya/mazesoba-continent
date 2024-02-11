@@ -14,10 +14,6 @@
     } from '../wailsjs/runtime/runtime.js'
 
     import {
-        GenerateDummyInviteCode,
-    } from './topping/invite-code.js'
-
-    import {
         ConvertRichUnicode
     } from './topping/unicode.js'
 
