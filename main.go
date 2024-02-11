@@ -104,12 +104,12 @@ func main() {
 			Assets: assets,
 		},
 		Frameless: true,
-		// CSSDragProperty:  "windows",
-		// CSSDragValue:     "1",
 
-		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
+		// Windows allows A: 0 or 255 only, therefore we'll use 0 for simple.
+		BackgroundColour: &options.RGBA{R: 48, G: 48, B: 48, A: 0},
 
 		OnStartup:     app.startup,
+		OnDomReady:    app.onDomReady,
 		OnBeforeClose: app.beforeClose,
 		Menu:          AppMenu,
 		Bind: []interface{}{
@@ -118,10 +118,9 @@ func main() {
 		Windows: &windows.Options{
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
-			// BackdropType:                      windows.Auto,
-			BackdropType:                      windows.Acrylic,
+			// BackdropType:         windows.None,
 			DisableWindowIcon:                 false,
-			DisableFramelessWindowDecorations: false,
+			DisableFramelessWindowDecorations: true, // this makes true transparent
 			Theme:                             windows.SystemDefault,
 		},
 		Mac: &mac.Options{
@@ -144,6 +143,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		app.logger.Warn("error on app close: ", err.Error())
 	}
 }
