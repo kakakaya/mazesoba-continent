@@ -69,6 +69,11 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
+func (a *App) onDomReady(ctx context.Context) {
+	slog.Info("Emitting OnDomReady", a.config)
+	runtime.EventsEmit(ctx, "OnDomReady", "hello")
+}
+
 func (a *App) beforeClose(ctx context.Context) bool {
 	err := a.scheduler.Shutdown()
 	if err != nil {
@@ -129,7 +134,7 @@ func NewHttpClient() *http.Client {
 
 func (a *App) Post(text string) string {
 	a.logger.Info("Post", "text", text)
-	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
+	beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
 
 	if a.environment.BuildType == "dev" {
 		return "<MOCK URI>"

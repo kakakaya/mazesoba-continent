@@ -10,7 +10,8 @@
         WindowCenter,
         WindowHide,
         WindowShow,
-        Quit
+        Quit,
+        LogInfo,
     } from '../wailsjs/runtime/runtime.js'
 
     import {
@@ -55,6 +56,10 @@
         charCounter = countGrapheme(text)
     }
 
+    function setBackgroundColor(r, g, b, a) {
+        const newBackgroundStyle = `background-color: rgba(${r}, ${g}, ${b}, ${a});`
+        // FIXME: implement, I've tired for now
+    }
 
     // Setup Events
     EventsOn("call-clearText", () => {
@@ -65,6 +70,10 @@
     })
     EventsOn("call-chikuwa", () => {
         chikuwa()
+    })
+    EventsOn("OnDomReady", (args) => {
+        LogInfo("OnDomReady");
+        LogInfo(args);
     })
 </script>
 

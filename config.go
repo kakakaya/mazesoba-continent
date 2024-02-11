@@ -27,6 +27,10 @@ type windowConfig struct {
 	Height      int
 	AlwaysOnTop bool
 	Transparent bool
+	BackgroundR int
+	BackgroundG int
+	BackgroundB int
+	BackgroundA float64
 }
 
 type credConfig struct {
@@ -56,6 +60,10 @@ func loadOrCreateConfig(configPath string) (Config, error) {
 				Height:      200,
 				AlwaysOnTop: true,
 				Transparent: true,
+				BackgroundR: 27,
+				BackgroundG: 38,
+				BackgroundB: 54,
+				BackgroundA: 0.5,
 			},
 			Credential: credConfig{
 				Identifier: "ID (e.g. example.bsky.social)",
