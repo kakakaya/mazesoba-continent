@@ -58,7 +58,7 @@ func main() {
 	// menu ================
 	AppMenu := menu.NewMenu()
 	FileMenu := AppMenu.AddSubmenu("ファイル")
-	FileMenu.AddText("Quit", keys.Key("Escape"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("沈没", keys.Key("Escape"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
 	})
 	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
@@ -109,8 +109,9 @@ func main() {
 
 		BackgroundColour: &options.RGBA{R: 48, G: 128, B: 48, A: 0},
 
-		OnStartup: app.startup,
-		Menu:      AppMenu,
+		OnStartup:     app.startup,
+		OnBeforeClose: app.beforeClose,
+		Menu:          AppMenu,
 		Bind: []interface{}{
 			app,
 		},
