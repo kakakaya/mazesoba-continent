@@ -5,7 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -14,8 +15,8 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/bluesky-social/indigo/xrpc"
 	"github.com/gen2brain/beeep"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"golang.org/x/exp/slog"
 )
 
 // App struct
@@ -25,6 +26,7 @@ type App struct {
 	xrpcc       *xrpc.Client
 	logger      *slog.Logger
 	environment runtime.EnvironmentInfo
+	scheduler   gocron.Scheduler
 }
 
 // dialogResults is used for casting Dialog's response to boolean. Note that keys are lowercase.
@@ -56,69 +58,41 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.logger.Info("Startup", "environment", a.environment)
 
-	// Build xrpc.Client
-	var auth *xrpc.AuthInfo
-	cred := a.config.Credential
-	if cred.Host == "" || cred.Identifier == "" || cred.Password == "" {
-		a.logger.Warn("Credentials not set!")
-		result, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.QuestionDialog,
-			Title:         "認証情報がないよ",
-			Message:       "config.tomlにIDとパスワードを入力してね。\nこのまま沈没するけど、設定ファイルの場所を開く？",
-			DefaultButton: "Yes",
-		})
-		if err != nil {
-			a.logger.Warn("Error creds not set dialog", "error", err)
-		}
-		a.logger.Info(result)
-		if dialogResults[strings.ToLower(result)] {
-			a.OpenConfigDirectory()
-		}
-		a.logger.Warn("Missing credentials")
-	}
-
-	auth, err := createSession(cred.Host, cred.Identifier, cred.Password)
-
+	err := a.SetXRPCClient()
 	if err != nil {
-		// If auth failed,
-		result, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.QuestionDialog,
-			Title:         "認証に失敗しました",
-			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードを確認してください。\nこのまま沈没するけど、設定ファイルの場所を開く？", cred.Host),
-			DefaultButton: "Yes",
-		})
-
-		if err != nil {
-			a.logger.Warn("Error creds not set dialog", "error", err)
-		}
-		a.logger.Info(result)
-		if dialogResults[strings.ToLower(result)] {
-			a.OpenConfigDirectory()
-		}
-
-		a.logger.Warn("Failed creating session, bad identifier or password?", "error", err)
-		panic(err)
+		runtime.Quit(ctx)
 	}
 
-	xrpcc := &xrpc.Client{
-		Client: NewHttpClient(),
-		Host:   cred.Host,
-		Auth:   auth,
+	err = a.SetScheduler()
+	if err != nil {
+		runtime.Quit(ctx)
 	}
-	a.xrpcc = xrpcc
+}
+
+func (a *App) onDomReady(ctx context.Context) {
+	slog.Info("Emitting OnDomReady", a.config)
+	runtime.EventsEmit(ctx, "OnDomReady", "hello")
+}
+
+func (a *App) beforeClose(ctx context.Context) bool {
+	err := a.scheduler.Shutdown()
+	if err != nil {
+		a.logger.Warn("Error on scheduler shutdown:", err)
+	}
+	return false
 }
 
 // createSession calls "/xrpc/com.atproto.server.createSession" and returns xrpc.AuthInfo.
 func createSession(host string, identifier string, password string) (*xrpc.AuthInfo, error) {
 	payload := fmt.Sprintf(`{"identifier": "%s", "password": "%s"}`, identifier, password)
 	if host == "" {
-		return nil, fmt.Errorf("Error: host not set. Check [Credential] section in config file.")
+		return nil, fmt.Errorf("host not set. check [Credential] section in config file")
 	}
 
 	url := fmt.Sprintf("%s/xrpc/com.atproto.server.createSession", host)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(payload)))
 	if err != nil {
-		return nil, fmt.Errorf("Error creating HTTP request:", err)
+		return nil, fmt.Errorf("failed creating HTTP request: %r", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
@@ -130,11 +104,11 @@ func createSession(host string, identifier string, password string) (*xrpc.AuthI
 
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Error: Unexpected status code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading response body: %v", err)
+		return nil, fmt.Errorf("failed reading response body: %v", err)
 	}
 	var auth xrpc.AuthInfo
 	err = json.Unmarshal(body, &auth)
@@ -160,7 +134,7 @@ func NewHttpClient() *http.Client {
 
 func (a *App) Post(text string) string {
 	a.logger.Info("Post", "text", text)
-	err := beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
+	beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
 
 	if a.environment.BuildType == "dev" {
 		return "<MOCK URI>"
@@ -197,4 +171,87 @@ func (a *App) OpenLogDirectory() error {
 
 func (a *App) GetVersion() string {
 	return Version
+}
+
+func (a *App) SetXRPCClient() error {
+
+	// Build xrpc.Client
+	var auth *xrpc.AuthInfo
+	cred := a.config.Credential
+	if cred.Host == "" || cred.Identifier == "" || cred.Password == "" {
+		a.logger.Warn("Credentials not set!")
+		result, dialogErr := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:          runtime.QuestionDialog,
+			Title:         "認証情報がないよ",
+			Message:       "config.tomlにIDとパスワードを入力してね。\nこのまま沈没するけど、設定ファイルの場所を開く？",
+			DefaultButton: "Yes",
+		})
+		if dialogErr != nil {
+			a.logger.Warn("Error creds not set dialog", "error", dialogErr)
+		}
+		a.logger.Info(result)
+		if dialogResults[strings.ToLower(result)] {
+			a.OpenConfigDirectory()
+		}
+		a.logger.Warn("Missing credentials")
+		return fmt.Errorf("Couldn't load valid credentials.")
+	}
+
+	auth, authErr := createSession(cred.Host, cred.Identifier, cred.Password)
+
+	if authErr != nil {
+		// If auth failed,
+		result, dialogErr := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:          runtime.QuestionDialog,
+			Title:         "認証に失敗したよ",
+			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードを確認してね。\nこのまま沈没するけど、設定ファイルの場所を開く？", cred.Host),
+			DefaultButton: "Yes",
+		})
+
+		if dialogErr != nil {
+			a.logger.Warn("Error creds not set dialog", "error", dialogErr)
+		}
+		a.logger.Info(result)
+		if dialogResults[strings.ToLower(result)] {
+			a.OpenConfigDirectory()
+		}
+
+		a.logger.Warn("Failed creating session, bad identifier or password?", "error", authErr)
+		return authErr
+	}
+
+	xrpcc := &xrpc.Client{
+		Client: NewHttpClient(),
+		Host:   cred.Host,
+		Auth:   auth,
+	}
+	a.xrpcc = xrpcc
+	a.logger.Info("Set XRPCC succeeded.")
+	return nil
+}
+
+func (a *App) SetScheduler() error {
+	s, err := gocron.NewScheduler()
+	if err != nil {
+		return err
+	}
+	a.scheduler = s
+	// add a job to the scheduler
+	j, err := a.scheduler.NewJob(
+		gocron.DurationJob(
+			10*time.Minute,
+		),
+		gocron.NewTask(
+			a.SetXRPCClient,
+		),
+	)
+	if err != nil {
+		a.logger.Warn("Error occurred on SetScheduler: ", err, j)
+	}
+
+	// start the scheduler
+	a.scheduler.Start()
+
+	// err = s.Shutdown()
+	return nil
 }

@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/BurntSushi/toml"
 	"github.com/adrg/xdg"
@@ -27,6 +27,10 @@ type windowConfig struct {
 	Height      int
 	AlwaysOnTop bool
 	Transparent bool
+	BackgroundR int
+	BackgroundG int
+	BackgroundB int
+	BackgroundA float64
 }
 
 type credConfig struct {
@@ -56,6 +60,15 @@ func loadOrCreateConfig(configPath string) (Config, error) {
 				Height:      200,
 				AlwaysOnTop: true,
 				Transparent: true,
+				BackgroundR: 27,
+				BackgroundG: 38,
+				BackgroundB: 54,
+				BackgroundA: 0.5,
+			},
+			Credential: credConfig{
+				Identifier: "ID (e.g. example.bsky.social)",
+				Password:   "App Password (see https://tokimekibluesky-docs.vercel.app/ja/apppassword)",
+				Host:       "https://bsky.social",
 			},
 		}
 		buf := new(bytes.Buffer)
@@ -69,7 +82,7 @@ func loadOrCreateConfig(configPath string) (Config, error) {
 			buf.String(),
 			"=========================================",
 		)
-		ioutil.WriteFile(configFile, buf.Bytes(), 0644)
+		os.WriteFile(configFile, buf.Bytes(), 0644)
 		config = defaultConfig
 	}
 	return config, nil

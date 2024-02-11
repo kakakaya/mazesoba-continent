@@ -25,3 +25,11 @@ export function Post(arg1) {
 export function PostAndForget(arg1) {
   return window['go']['main']['App']['PostAndForget'](arg1);
 }
+
+export function SetScheduler() {
+  return window['go']['main']['App']['SetScheduler']();
+}
+
+export function SetXRPCClient() {
+  return window['go']['main']['App']['SetXRPCClient']();
+}

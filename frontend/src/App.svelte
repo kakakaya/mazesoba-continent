@@ -10,12 +10,9 @@
         WindowCenter,
         WindowHide,
         WindowShow,
-        Quit
+        Quit,
+        LogInfo,
     } from '../wailsjs/runtime/runtime.js'
-
-    import {
-        GenerateDummyInviteCode,
-    } from './topping/invite-code.js'
 
     import {
         ConvertRichUnicode
@@ -44,14 +41,6 @@
         text = ""
     }
 
-    function appendDummyInviteCode() {
-        if (text === undefined | !(typeof text === 'string' && text.startsWith('bsky-'))) {
-            text = GenerateDummyInviteCode()
-        } else {
-            text += "\n" + GenerateDummyInviteCode()
-        }
-    }
-
     function unicode() {
         text = ConvertRichUnicode(text, 'sansBold')
     }
@@ -67,6 +56,10 @@
         charCounter = countGrapheme(text)
     }
 
+    function setBackgroundColor(r, g, b, a) {
+        const newBackgroundStyle = `background-color: rgba(${r}, ${g}, ${b}, ${a});`
+        // FIXME: implement, I've tired for now
+    }
 
     // Setup Events
     EventsOn("call-clearText", () => {
@@ -78,8 +71,9 @@
     EventsOn("call-chikuwa", () => {
         chikuwa()
     })
-    EventsOn("call-appendDummyInviteCode", () => {
-        appendDummyInviteCode()
+    EventsOn("OnDomReady", (args) => {
+        LogInfo("OnDomReady");
+        LogInfo(args);
     })
 </script>
 
