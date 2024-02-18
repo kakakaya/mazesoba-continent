@@ -100,8 +100,8 @@ body {
 #inputbox {
     background: transparent;
     color: white;
-    height: 95%;
-    width: 95%;
+    height: 95vh;
+    width: 95vw;
     resize: none;
     border: none;
     outline: none;

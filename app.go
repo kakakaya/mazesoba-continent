@@ -9,6 +9,8 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"os/exec"
+	goruntime "runtime"
 	"strings"
 	"time"
 
@@ -67,11 +69,6 @@ func (a *App) startup(ctx context.Context) {
 	if err != nil {
 		runtime.Quit(ctx)
 	}
-}
-
-func (a *App) onDomReady(ctx context.Context) {
-	slog.Info("Emitting OnDomReady", a.config)
-	runtime.EventsEmit(ctx, "OnDomReady", "hello")
 }
 
 func (a *App) beforeClose(ctx context.Context) bool {
@@ -169,8 +166,21 @@ func (a *App) OpenLogDirectory() error {
 	return openDirectory(f)
 }
 
-func (a *App) GetVersion() string {
-	return Version
+func OpenURL(url string) error {
+	var cmd string
+	var args []string
+
+	switch goruntime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default:
+		cmd = "xdg-open"
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
 }
 
 func (a *App) SetXRPCClient() error {
@@ -204,7 +214,7 @@ func (a *App) SetXRPCClient() error {
 		result, dialogErr := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:          runtime.QuestionDialog,
 			Title:         "認証に失敗したよ",
-			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードを確認してね。\nこのまま沈没するけど、設定ファイルの場所を開く？", cred.Host),
+			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードとインターネット接続を確認してね。\n設定ファイルの場所を開く？", cred.Host),
 			DefaultButton: "Yes",
 		})
 
