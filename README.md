@@ -1,8 +1,6 @@
 # まぜそば大陸
 
-<div align="center">
-  ![Screenshot](docs/images/screenshot.png)
-</div>
+![Screenshot](https://raw.githubusercontent.com/kakakaya/mazesoba-continent/main/docs/images/screenshot.png)
 
 [![GitHub Release Date](https://img.shields.io/github/release-date/kakakaya/mazesoba-continent?style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
 [![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/kakakaya/mazesoba-continent/latest/total?sort=semver&style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
