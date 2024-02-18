@@ -6,8 +6,8 @@ export function Chikuwa(arg1) {
   return window['go']['main']['App']['Chikuwa'](arg1);
 }
 
-export function GetVersion() {
-  return window['go']['main']['App']['GetVersion']();
+export function DispatchCommand(arg1) {
+  return window['go']['main']['App']['DispatchCommand'](arg1);
 }
 
 export function OpenConfigDirectory() {
