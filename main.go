@@ -23,7 +23,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const Version = "v9"
+const Version = "v10"
 
 func main() {
 	// Create an instance of the app structure
@@ -58,8 +58,11 @@ func main() {
 	// menu ================
 	AppMenu := menu.NewMenu()
 	FileMenu := AppMenu.AddSubmenu("ファイル")
-	FileMenu.AddText("沈没", keys.Key("Escape"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("沈没", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
+	})
+	FileMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "call-post")
 	})
 	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
 		app.OpenConfigDirectory()
@@ -68,20 +71,6 @@ func main() {
 		app.OpenLogDirectory()
 	})
 
-	CommandMenu := AppMenu.AddSubmenu("技")
-	CommandMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "call-post")
-	})
-	CommandMenu.AddText("ちくわ。", keys.OptionOrAlt("c"), func(_ *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "call-chikuwa")
-	})
-	CommandMenu.AddText("地震だ！", keys.OptionOrAlt("F9"), func(_ *menu.CallbackData) {
-		app.Chikuwa("地震だ！")
-	})
-	CommandMenu.AddSubmenu("バージョン")
-	CommandMenu.AddText("バージョン", keys.OptionOrAlt("v"), func(_ *menu.CallbackData) {
-		app.Chikuwa("")
-	})
 	// BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
 	WindowMenu := AppMenu.AddSubmenu("Window")
 	WindowMenu.AddText("中央に移動する", nil, func(_ *menu.CallbackData) {
@@ -109,7 +98,6 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 48, G: 48, B: 48, A: 0},
 
 		OnStartup:     app.startup,
-		OnDomReady:    app.onDomReady,
 		OnBeforeClose: app.beforeClose,
 		Menu:          AppMenu,
 		Bind: []interface{}{
@@ -143,6 +131,6 @@ func main() {
 	})
 
 	if err != nil {
-		app.logger.Warn("error on app close: ", err.Error())
+		app.logger.Warn("error on app close", "error", err.Error())
 	}
 }

@@ -1,73 +1,33 @@
-# README
+# まぜそば大陸
+
+<div align="center">
+  ![Screenshot](docs/images/screenshot.png)
+</div>
+
+[![GitHub Release Date](https://img.shields.io/github/release-date/kakakaya/mazesoba-continent?style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
+[![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/kakakaya/mazesoba-continent/latest/total?sort=semver&style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
+[![GitHub License](https://img.shields.io/github/license/kakakaya/mazesoba-continent?style=flat)](https://github.com/kakakaya/mazesoba-continent?tab=MIT-1-ov-file#readme)
+[![GitHub Repo stars](https://img.shields.io/github/stars/kakakaya/mazesoba-continent)](https://github.com/kakakaya/mazesoba-continent)
+[![codecov](https://codecov.io/gh/kakakaya/mazesoba-continent/branch/master/graph/badge.svg)](https://codecov.io/gh/kakakaya/mazesoba-continent)
 
 投稿力の変わらないただ一つのBlueskyクライアント。そう、まぜそば大陸ならね。
 
 Out of respect for [ラーメン大陸](https://forest.watch.impress.co.jp/docs/news/559014.html).
 
-## About
-
-### 使い方
+## 簡単な使い方
 
 初回起動すると「設定ファイルが未設定だよ」みたいなことを言うので、設定ファイルの場所を開いて `config.toml` で以下の内容を入力してください。
 
-```
+```toml
 [Credential]
   Identifier = "<ここにIdentifierを入れる>"
   Password = "<ここにパスワードを入れる>"
   Host = "https://bsky.social"
 ```
 
-以上
+Windows や Linux なら <kbd>Ctrl</kbd> + <kbd>Enter</kbd> macOS なら <kbd>Cmd</kbd> + <kbd>Enter</kbd> で投稿ができます。
 
-### ラーメン大陸リスペクト機能
-チェックが付いた機能は実装済み(つまりまだなにもできていない)
+## 複雑な使い方
 
-- [x] 投稿
-- ウィンドウ
-    - [x] 表示
-    - [ ] 残り文字数
-    - [ ] 半透明表示
-    - [ ] TL(現時点で実装予定なし)
-    - [ ] フッター
-- キーボード操作
-    - [x] Ctrl+Enterで入力内容をポスト
-    - [ ] F1キーでTL画面呼び出し(実装予定なし)
-    - [ ] F2キーで設定画面呼び出し
-    - [ ] F3キーでURL短縮
-    - [ ] F4キーで入力文字列のデフラグ
-    - [ ] F5キーでポスト画面に入力されている文字列の翻訳(実装予定なし)
-    - [ ] F6キーでポスト画面に入力されている文字列の英日翻訳(実装予定なし)
-    - [ ] F7キーでポスト画面に入力されている文字列の日英日翻訳(実装予定なし)
-    - [ ] F8キーで新規付箋(実装予定なし)
-    - [x] F9キーで｢地震だ！｣機能。どこの田舎よりも素早い速報を！
-    - [ ] F10キーでCDトレイの開閉。(実装予定なし)
-    - [ ] F11キーでポストにフッターのオンオフ。(空文字無効)
-    - [ ] F12キーでポストにハッシュタグのオンオフ。(空文字無効)
-    - [ ] Escキーで終了or隠れる。
-- マウス
-    - [ ] 残り文字数の部分をダブルクリックでTL画面呼び出し。
-    - [ ] 残り文字数の部分を右クリックでメニュー呼び出し。
-    - [x] 残り文字数の部分を掴んだら移動。
-        - まぜそば大陸はどこでも掴んだら移動可能。
-- アレ
-    - [x] ちくわ
-    - [ ] ハイパーステルスアレ
-- おまけ
-    - [ ] @最新版天童アリス：最新版の確認。
-    - [ ] 新しいまぜそば大陸の存在…？：最新版の確認。
-    - [ ] まさか…？！新しいまぜそば大陸？！：最新版の確認。
-    - [ ] まぜそば大陸、用意できてる？：最新版の確認。
-    - [ ] kakakayaくん…。：おいやめろ。
-
-## Develop
-
-### Live Development
-
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
-
-### Building
-
-To build a redistributable, production mode package, use `wails build`.
+- [Slash Command](./docs/SLASH_COMMAND.md)
+  - "/help"

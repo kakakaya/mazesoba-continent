@@ -1,8 +1,6 @@
 <script>
-    import logo from './assets/images/logo-universal.png'
     import {
-        Chikuwa,
-        Post,
+        DispatchCommand,
     } from '../wailsjs/go/main/App.js'
     import {
         EventsOn,
@@ -23,15 +21,7 @@
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？"
 
     function post() {
-        Post(text).then(result => {
-            placeholder = result
-            text = ""
-        })
-    }
-
-    function chikuwa() {
-        const c = text ? text : "ちくわ。"
-        Chikuwa(c).then(result => {
+        DispatchCommand(text).then(result => {
             placeholder = result
             text = ""
         })
@@ -58,7 +48,7 @@
 
     function setBackgroundColor(r, g, b, a) {
         const newBackgroundStyle = `background-color: rgba(${r}, ${g}, ${b}, ${a});`
-        // FIXME: implement, I've tired for now
+        LogInfo(newBackgroundStyle)
     }
 
     // Setup Events
@@ -68,19 +58,13 @@
     EventsOn("call-post", () => {
         post()
     })
-    EventsOn("call-chikuwa", () => {
-        chikuwa()
-    })
-    EventsOn("OnDomReady", (args) => {
-        LogInfo("OnDomReady");
-        LogInfo(args);
+    EventsOn("call-ondomready", (config) => {
+        LogInfo(JSON.stringify(config))
+        setBackgroundColor(config.Window.BackgroundR, config.Window.BackgroundG, config.Window.BackgroundB, config.Window.BackgroundA)
     })
 </script>
 
 <main style="--wails-draggable:drag">
-    <div class="input-box" id="input">
-        <textarea autocomplete="off" bind:value={text} on:input={onChange} placeholder={placeholder} id="inputbox" />
-        <p id="char-counter" class="char-count">{charCounter}</p>
-    </div>
-    <p id="input-length"></p>
+    <textarea autocomplete="off" bind:value={text} on:input={onChange} placeholder={placeholder} id="inputbox" />
+    <p id="char-counter" class="char-count">{charCounter}</p>
 </main>
