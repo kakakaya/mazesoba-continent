@@ -1,5 +1,4 @@
 <script>
-    import logo from './assets/images/logo-universal.png'
     import {
         Chikuwa,
         Post,
