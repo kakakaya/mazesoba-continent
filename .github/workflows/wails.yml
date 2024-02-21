@@ -17,13 +17,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'mazesoba-continent'
+          - name: 'mazesoba-continent-linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'mazesoba-continent'
+          - name: 'mazesoba-continent-windows'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'mazesoba-continent'
+          - name: 'mazesoba-continent-macos'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
