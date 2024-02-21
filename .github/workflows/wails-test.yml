@@ -19,7 +19,8 @@ jobs:
     strategy:
       matrix:
         build:
-          - platform: 'linux/amd64'
+          - name: 'mazesoba-continent-linux-testbuild'
+            platform: 'linux/amd64'
             os: 'ubuntu-latest'
     runs-on: ${{ matrix.build.os }}
     steps:
