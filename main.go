@@ -61,6 +61,9 @@ func main() {
 	FileMenu.AddText("沈没", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
 	})
+	FileMenu.AddText("雲隠", keys.CmdOrCtrl("w"), func(_ *menu.CallbackData) {
+		runtime.Hide(app.ctx)
+	})
 	FileMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "call-post")
 	})
