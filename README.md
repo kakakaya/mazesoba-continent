@@ -29,3 +29,7 @@ Windows や Linux なら <kbd>Ctrl</kbd> + <kbd>Enter</kbd> macOS なら <kbd>Cm
 
 - [Slash Command](./docs/SLASH_COMMAND.md)
   - "/help"
+
+## アクセスカウンター
+
+<div align='center'><a href='https://www.websitecounterfree.com'><img src='https://www.websitecounterfree.com/c.php?d=9&id=50157&s=1' border='0' alt='Free Website Counter'></a>
