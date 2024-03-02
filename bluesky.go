@@ -18,7 +18,7 @@ func BskyFeedPost(xrpcc *xrpc.Client, text string) (string, error) {
 		Record: &lexutil.LexiconTypeDecoder{
 			Val: &appbsky.FeedPost{
 				Text:      text,
-				CreatedAt: time.Now().Format("2006-01-02T15:04:05.000Z"),
+				CreatedAt: time.Time.UTC(time.Now()).Format("2006-01-02T15:04:05.000Z"),
 			},
 		},
 	})
