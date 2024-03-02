@@ -9,8 +9,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"os/exec"
-	goruntime "runtime"
 	"strings"
 	"time"
 
@@ -164,23 +162,6 @@ func (a *App) OpenLogDirectory() error {
 	f, _ := xdg.CacheFile("mazesoba-continent")
 	a.logger.Info("OpenLogDirectory", "path", f)
 	return openDirectory(f)
-}
-
-func OpenURL(url string) error {
-	var cmd string
-	var args []string
-
-	switch goruntime.GOOS {
-	case "windows":
-		cmd = "cmd"
-		args = []string{"/c", "start"}
-	case "darwin":
-		cmd = "open"
-	default:
-		cmd = "xdg-open"
-	}
-	args = append(args, url)
-	return exec.Command(cmd, args...).Start()
 }
 
 func (a *App) SetXRPCClient() error {
