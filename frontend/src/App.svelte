@@ -14,7 +14,7 @@
 
     import {
         ConvertRichUnicode
-    } from './topping/unicode.js'
+    } from './topping/unicode.ts'
 
     let text
     let charCounter = 0
