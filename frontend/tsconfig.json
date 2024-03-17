@@ -14,6 +14,9 @@
      */
     "allowJs": true,
     "checkJs": true,
+    // Generate d.ts files
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "isolatedModules": true
   },
   "include": [
@@ -21,6 +24,10 @@
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.svelte"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
   ],
   "references": [
     {
