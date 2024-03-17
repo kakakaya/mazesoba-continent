@@ -15,5 +15,4 @@
 # vendor/
 node_modules
 /build/bin
-/build/windows
-/frontend/build/
+/build/windows/installer/tmp/
