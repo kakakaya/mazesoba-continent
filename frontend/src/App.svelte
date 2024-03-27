@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {
         DispatchCommand,
     } from '../wailsjs/go/main/App.js'
@@ -16,7 +16,7 @@
         ConvertRichUnicode
     } from './topping/unicode.ts'
 
-    let text
+    let text: string
     let charCounter = 0
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？"
 
@@ -35,21 +35,17 @@
         text = ConvertRichUnicode(text, 'sansBold')
     }
 
-    function countGrapheme(string) {
+    function countGrapheme(input: string) {
         const segmenter = new Intl.Segmenter("ja", {
             granularity: "grapheme"
         });
-        return [...segmenter.segment(string)].length;
+        return [...segmenter.segment(input)].length;
     }
 
     function onChange() {
         charCounter = countGrapheme(text)
     }
 
-    function setBackgroundColor(r, g, b, a) {
-        const newBackgroundStyle = `background-color: rgba(${r}, ${g}, ${b}, ${a});`
-        LogInfo(newBackgroundStyle)
-    }
 
     // Setup Events
     EventsOn("call-clearText", () => {
@@ -57,10 +53,6 @@
     })
     EventsOn("call-post", () => {
         post()
-    })
-    EventsOn("call-ondomready", (config) => {
-        LogInfo(JSON.stringify(config))
-        setBackgroundColor(config.Window.BackgroundR, config.Window.BackgroundG, config.Window.BackgroundB, config.Window.BackgroundA)
     })
 </script>
 

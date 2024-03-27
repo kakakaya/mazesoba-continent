@@ -937,7 +937,7 @@ const convertMap = {
 
 type ConvertMode = 'circledBlack' | 'circled' | 'doublestruck' | 'frakturBold' | 'fraktur' | 'monospace' | 'sansBold' | 'sansBoldItalic' | 'sans' | 'sansItalic' | 'scriptBold' | 'script' | 'serifBold' | 'serifBoldItalic' | 'squaredBlack' | 'squared'
 
-export function ConvertRichUnicode(text: string, mode: ConvertMode) {
+export function ConvertRichUnicode(text: string, mode: ConvertMode): string {
     let dict: Map<string, string>;
     switch (mode) {
         case 'circledBlack':
