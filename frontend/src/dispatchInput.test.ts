@@ -45,17 +45,20 @@ describe('dispatchInput', () => {
         let resOk = '', resFail = ''
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
         assert.equal(resOk, '')
-        assert.equal(resFail, 'Error: Unknown help topic')
+        assert.equal(resFail, '😕「unknown-topicって？」')
         expect(BrowserOpenURL).not.toHaveBeenCalled()
         expect(Post).not.toHaveBeenCalled()
 
     })
 
     it.each([
-        // { input: "/open search foo", expected: "https://bsky.app/search?q=foo" },
+        { input: "/open search foo", expected: "https://bsky.app/search?q=foo" },
         // { input: " /open   search　まぜそば大陸　", expected: "https://bsky.app/search?q=まぜそば大陸" },
-    ])(`Open search page if input=$input`, ({ input, expected }) => {
+    ])(`Open search page if input=$input`, async ({ input, expected }) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        //assert.equal(resOk, `Search: ${expected}`)
+        assert.equal(resFail, '')
         expect(BrowserOpenURL).toHaveBeenCalledWith(expected)
     })
 })
-

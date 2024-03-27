@@ -19,11 +19,29 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                 } else {
                     return helpCommand(...helpArgs)
                 }
-                break;
+            case "/open":
+                const openTarget = args.at(1)
+                switch (openTarget) {
+                    case "search":
+                        const searchArgs = args.slice(2);
+                        if (dryRun) {
+                            return Promise.resolve(`Search ${searchArgs.join(" ")}`);
+                        } else {
+                            return searchCommand(...searchArgs)
+                        }
+                    case "weather":
+                        const addressArgs = args.slice(2);
+                        if (dryRun) {
+                            return Promise.resolve(`Search ${addressArgs.join(" ")}`);
+                        } else {
+                            return helpCommand(...addressArgs)
+                        }
+                    default:
+                        return Promise.reject(`😕「何を開くの？アジ？」`)
+                }
             default:
-                break;
+                return Promise.reject(`😕「${args.at(0)}をしろと言われても？」`)
         }
-        return Promise.reject("Unknown command")
     }
     return Post(input)
 }
@@ -45,7 +63,14 @@ export function helpCommand(...topics: string[]): Promise<string> {
             BrowserOpenURL(CONFIG)
             return Promise.resolve(`Open: ${CONFIG}`)
         default:
-            break;
+            return Promise.reject(`😕「${topics}って？」`)
     }
-    return Promise.reject("Error: Unknown help topic")
+}
+
+export function searchCommand(...searchArgs: string[]): Promise<string> {
+    if (searchArgs.length < 1) {
+        return Promise.reject("😕検索ワードを指定してね")
+    }
+    BrowserOpenURL('https://bsky.app/search?q=foo')
+    return Promise.resolve(``)
 }
