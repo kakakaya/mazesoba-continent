@@ -11,7 +11,7 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
     if (input.startsWith("/")) {
         input = input.trim()
         const args = input.split(" ");
-        switch (input) {
+        switch (args.at(0)) {
             case "/help":
                 const helpArgs = args.slice(1);
                 if (dryRun) {
@@ -34,19 +34,18 @@ export function helpCommand(...topics: string[]): Promise<string> {
     const CONFIG = 'https://github.com/kakakaya/mazesoba-continent/blob/main/docs/CONFIG.md'
     if (topics.length == 0) {
         BrowserOpenURL(README)
-        return Promise.resolve("Opened?")
+        return Promise.resolve(`Open: ${README}`)
     }
-    console.log(topics)
     switch (topics.at(0)) {
         case 'command':
             BrowserOpenURL(COMMAND)
-            return Promise.resolve("Opened?")
+            return Promise.resolve(`Open: ${COMMAND}`)
             break;
         case 'config':
             BrowserOpenURL(CONFIG)
-            return Promise.resolve("Opened?")
+            return Promise.resolve(`Open: ${CONFIG}`)
         default:
             break;
     }
-    return Promise.reject("Unknown help page")
+    return Promise.reject("Error: Unknown help topic")
 }
