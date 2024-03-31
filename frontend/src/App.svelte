@@ -1,7 +1,9 @@
 <script lang="ts">
     import {
-        DispatchCommand,
-    } from '../wailsjs/go/main/App.js'
+        OpenConfigDirectory,
+        OpenLogDirectory,
+    } from "../wailsjs/go/main/App";
+
     import {
         EventsOn,
         EventsEmit,
@@ -10,53 +12,82 @@
         WindowShow,
         Quit,
         LogInfo,
-    } from '../wailsjs/runtime/runtime.js'
+    } from "../wailsjs/runtime/runtime.js";
+    import { dispatchInput } from "./dispatchInput.js";
 
-    import {
-        ConvertRichUnicode
-    } from './topping/unicode.ts'
+    import { ConvertRichUnicode } from "./topping/unicode";
 
-    let text: string
-    let charCounter = 0
-    let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？"
-
-    function post() {
-        DispatchCommand(text).then(result => {
-            placeholder = result
-            text = ""
-        })
-    }
+    let input: string = "";
+    let helpMessage = "Ready";
+    let postFooter = "";
+    let charCounter = 0;
+    let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
 
     function clearText() {
-        text = ""
+        input = "";
+        charCounter = 0;
+        const inputBox = document.getElementById("inputbox");
+        if (inputBox) {
+            inputBox.removeAttribute("readonly");
+            inputBox.focus();
+        }
     }
 
-    function unicode() {
-        text = ConvertRichUnicode(text, 'sansBold')
+    function onInputChange() {
+        dispatchInput(input, true)
+            .then((result) => {
+                if (/^\d+$/.test(result)) {
+                    charCounter = parseInt(result);
+                    helpMessage = "";
+                } else {
+                    helpMessage = result;
+                }
+            })
+            .catch((error) => {
+                helpMessage = `${error}`;
+            });
     }
 
-    function countGrapheme(input: string) {
-        const segmenter = new Intl.Segmenter("ja", {
-            granularity: "grapheme"
-        });
-        return [...segmenter.segment(input)].length;
+    function executeInput() {
+        dispatchInput(input, false).then((result) => {
+            clearText();
+            placeholder = result;
+        }).catch((error) => {
+            clearText();
+            helpMessage = `Error: ${error}`;
+        })
     }
+    function handleKeyDown(event: KeyboardEvent) {
+        // Press Ctrl+Enter to send message
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+            event.preventDefault();
+            executeInput();
+        }
 
-    function onChange() {
-        charCounter = countGrapheme(text)
+        // Press Ctrl+, to show settings
+        if ((event.ctrlKey || event.metaKey) && event.key === ",") {
+            event.preventDefault();
+            EventsEmit("call-showSettings");
+        }
     }
-
-
     // Setup Events
     EventsOn("call-clearText", () => {
-        clearText()
-    })
-    EventsOn("call-post", () => {
-        post()
-    })
+        clearText();
+    });
 </script>
 
 <main style="--wails-draggable:drag">
-    <textarea autocomplete="off" bind:value={text} on:input={onChange} placeholder={placeholder} id="inputbox" />
-    <p id="char-counter" class="char-count">{charCounter}</p>
+    <textarea
+        autocomplete="off"
+        bind:value={input}
+        on:input={onInputChange}
+        on:keydown={handleKeyDown}
+        {placeholder}
+        id="inputbox"
+    />
+    <div id="status-bar">
+        <div id="footer">{postFooter}</div>
+        <div id="message">{helpMessage}</div>
+        <div id="char-counter">{charCounter}</div>
+    </div>
 </main>
