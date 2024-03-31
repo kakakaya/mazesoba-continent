@@ -26,20 +26,20 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                         return executeOrDryRun(dryRun, `Search ${searchArgs.join(" ")}`, searchCommand, ...searchArgs)
                     case "weather":
                         const addressArgs = args.slice(2);
-                        return executeOrDryRun(dryRun, `${addressArgs.join(" ")}の天気を開く`, weatherCommand, ...addressArgs)
+                        return executeOrDryRun(dryRun, `${addressArgs.join(" ")}の天気を調べる`, weatherCommand, ...addressArgs)
                     default:
                         // If dryRun is false, 
                         // return a string that describes openTarget is invalid, with suitable emoji.
                         // otherwise, return a string that app is waiting for next input, with suitable emoji.
-                    if (dryRun) {
-                        return Promise.resolve(`😕「${openTarget}ってなに？」`)
-                    } else {
-                        return Promise.reject(`😕「${openTarget}ってなに？」`)
-                    }
+                        if (dryRun) {
+                            return Promise.reject(`...`)
+                        } else {
+                            return Promise.reject(`😕「${openTarget}ってなに？」`)
+                        }
                 }
             default:
                 if (dryRun) {
-                    return Promise.resolve(`Post: ${input}`);
+                    return Promise.reject(`...`);
                 } else {
                     return Promise.reject(`😕「${args.at(0)}の仕方がわからないよ」`)
                 }

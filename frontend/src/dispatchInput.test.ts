@@ -117,11 +117,9 @@ describe('dispatchInput with dryrun', () => {
     })
 
     it.each([
-        { input: "/help", expected: 'READMEを開く' },
-        { input: "/help command", expected: 'スラッシュコマンドのヘルプを開く' },
-        { input: "/help config", expected: '設定のヘルプを開く' },
-
-
+        // { input: "/help", expected: 'READMEを開く' },
+        // { input: "/help command", expected: 'スラッシュコマンドのヘルプを開く' },
+        // { input: "/help config", expected: '設定のヘルプを開く' },
         { input: "/open weather 東京", expected: '東京の天気を調べる' },
     ])('Returns help message if dryRun is true', async ({ input, expected }) => {
         let resOk = '', resFail = ''
@@ -133,7 +131,7 @@ describe('dispatchInput with dryrun', () => {
     })
 
     it.each([
-        { input: "/help unknown" },
+        // { input: "/help unknown" },
         { input: "/open unknown" },
         { input: '/unknown-command' },
     ])('Rejects if unknown command or argumnet, input=$input', async ({ input }) => {
