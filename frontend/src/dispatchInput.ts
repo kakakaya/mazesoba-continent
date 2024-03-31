@@ -95,9 +95,13 @@ export function weatherCommand(...addressArgs: string[]): Promise<string> {
 }
 
 
-function countGrapheme(input: string) {
+export function countGrapheme(input: string): number {
     const segmenter = new Intl.Segmenter("ja", {
         granularity: "grapheme"
     });
     return [...segmenter.segment(input)].length;
+}
+
+export function countBytes(input: string): number {
+    return new TextEncoder().encode(input).length
 }

@@ -1,5 +1,5 @@
 import { expect, it, describe, vi, afterEach, assert, beforeAll } from 'vitest'
-import { dispatchInput } from './dispatchInput'
+import { dispatchInput, countGrapheme, countBytes } from './dispatchInput'
 import {
     Post,
 } from '../wailsjs/go/main/App.js'
@@ -91,5 +91,27 @@ describe('dispatchInput with dryrun', () => {
         assert.equal(resOk, expected)
         assert.equal(resFail, '')
         expect(Post).not.toBeCalled() // not called if dryrun
+    })
+})
+
+describe('countGrapheme', () => {
+    it.each([
+        { input: 'Hello, World', expected: 12 },
+        { input: 'こんにちは', expected: 5 },
+        { input: '👋', expected: 1 },
+        { input: '👩‍👩‍👧‍👧', expected: 1 },
+    ])('return displayed length of input', ({input, expected}) => {
+        expect(countGrapheme(input)).toBe(expected)
+    })
+})
+
+describe('countBytes', () => {
+    it.each([
+        { input: 'Hello, World', expected: 12 },
+        { input: 'こんにちは', expected: 15 },
+        { input: '👋', expected: 4 },
+        { input: '👩‍👩‍👧‍👧', expected: 25 },
+    ])('return length in UTF-8 bytes of input: $input', ({input, expected}) => {
+        expect(countBytes(input)).toBe(expected)
     })
 })
