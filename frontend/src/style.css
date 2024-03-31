@@ -78,7 +78,7 @@ body {
     /*
     margin: 0%;
     padding: 0%;
-    */  
+    */
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
         "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         sans-serif;
@@ -101,10 +101,46 @@ body {
     background: transparent;
     color: white;
     height: 95vh;
-    width: 95vw;
+    width: 100vw;
     resize: none;
     border: none;
     outline: none;
+}
+
+#status-bar {
+    /* position: absolute; */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: yellow;
+    display: flex;
+    color: white;
+    padding: 0px;
+    justify-content: flex-end;
+
+    border-top: 1px solid #999;
+
+    text-align: left;
+}
+
+#status-bar>div {
+    margin-left: 10px;
+    padding: 5px;
+}
+
+#char-counter {
+    color: white;
+    background-color: yellowgreen;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#message {
+    background-color: royalblue;
+}
+
+#footer {
+    background-color: hotpink;
 }
 
 .char-count {
