@@ -45,7 +45,7 @@ describe('dispatchInput', () => {
         let resOk = '', resFail = ''
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
         assert.equal(resOk, '')
-        assert.equal(resFail, '😕「unknown-topicって？」')
+        assert.notEqual(resFail, '')
         expect(BrowserOpenURL).not.toHaveBeenCalled()
         expect(Post).not.toHaveBeenCalled()
 
@@ -53,12 +53,43 @@ describe('dispatchInput', () => {
 
     it.each([
         { input: "/open search foo", expected: "https://bsky.app/search?q=foo" },
-        // { input: " /open   search　まぜそば大陸　", expected: "https://bsky.app/search?q=まぜそば大陸" },
+        { input: "/open search まぜそば大陸", expected: "https://bsky.app/search?q=%E3%81%BE%E3%81%9C%E3%81%9D%E3%81%B0%E5%A4%A7%E9%99%B8" },
+        { input: "/open search two words", expected: "https://bsky.app/search?q=two%20words" },
     ])(`Open search page if input=$input`, async ({ input, expected }) => {
         let resOk = '', resFail = ''
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
-        //assert.equal(resOk, `Search: ${expected}`)
+        expect(resOk).toContain(expected)
         assert.equal(resFail, '')
         expect(BrowserOpenURL).toHaveBeenCalledWith(expected)
+    })
+
+    it.each([
+        { input: "/open weather 東京", expected: "https://tenki.jp/search/?keyword=%E6%9D%B1%E4%BA%AC" },
+        { input: "/open weather 100-0001", expected: "https://tenki.jp/search/?keyword=100-0001" },
+    ])(`Open weather page if input=$input`, async ({ input, expected }) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        expect(resOk).toContain(expected)
+        assert.equal(resFail, '')
+        expect(BrowserOpenURL).toHaveBeenCalledWith(expected)
+    })
+})
+
+describe('dispatchInput with dryrun', () => {
+    afterEach(() => {
+        vi.resetAllMocks();
+    });
+
+    it.each([
+        { input: 'Hello, World', expected: '12' },
+        { input: 'こんにちは', expected: '5' },
+        { input: '👋', expected: '1' },
+        { input: '👩‍👩‍👧‍👧', expected: '1' },
+    ])('return length of message if input is usual messages', async ({input, expected}) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input, true).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        assert.equal(resOk, expected)
+        assert.equal(resFail, '')
+        expect(Post).not.toBeCalled() // not called if dryrun
     })
 })

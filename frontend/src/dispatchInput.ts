@@ -8,6 +8,9 @@ import {
 } from '../wailsjs/runtime/runtime.js'
 
 export function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
+    // 1. /で始まる場合はコマンドとして処理
+    // 2. 通常のメッセージの場合はそのままPost
+
     if (input.startsWith("/")) {
         input = input.trim()
         const args = input.split(" ");
@@ -32,16 +35,19 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                     case "weather":
                         const addressArgs = args.slice(2);
                         if (dryRun) {
-                            return Promise.resolve(`Search ${addressArgs.join(" ")}`);
+                            return Promise.resolve(`${addressArgs.join(" ")}の天気を開く`);
                         } else {
-                            return helpCommand(...addressArgs)
+                            return weatherCommand(...addressArgs)
                         }
                     default:
-                        return Promise.reject(`😕「何を開くの？アジ？」`)
+                        return Promise.reject(`😕「${openTarget}の開き方がわからないよ」`)
                 }
             default:
-                return Promise.reject(`😕「${args.at(0)}をしろと言われても？」`)
+                return Promise.reject(`😕「${args.at(0)}の仕方がわからないよ」`)
         }
+    }
+    if (dryRun) {
+        return Promise.resolve(countGrapheme(input).toString());
     }
     return Post(input)
 }
@@ -63,7 +69,7 @@ export function helpCommand(...topics: string[]): Promise<string> {
             BrowserOpenURL(CONFIG)
             return Promise.resolve(`Open: ${CONFIG}`)
         default:
-            return Promise.reject(`😕「${topics}って？」`)
+            return Promise.reject(`😕「${topics}ってなに？」`)
     }
 }
 
@@ -71,6 +77,27 @@ export function searchCommand(...searchArgs: string[]): Promise<string> {
     if (searchArgs.length < 1) {
         return Promise.reject("😕検索ワードを指定してね")
     }
-    BrowserOpenURL('https://bsky.app/search?q=foo')
-    return Promise.resolve(``)
+    const params = encodeURIComponent(searchArgs.join(' '))
+    const url = `https://bsky.app/search?q=${params}`
+    BrowserOpenURL(url)
+    return Promise.resolve(`Open: ${url}`)
+}
+
+export function weatherCommand(...addressArgs: string[]): Promise<string> {
+    if (addressArgs.length < 1) {
+        return Promise.reject("😕地名を指定してね")
+    }
+    const params = encodeURIComponent(addressArgs.join(' '))
+    const url = `https://tenki.jp/search/?keyword=${params}`
+
+    BrowserOpenURL(url)
+    return Promise.resolve(`Open: ${url}`)
+}
+
+
+function countGrapheme(input: string) {
+    const segmenter = new Intl.Segmenter("ja", {
+        granularity: "grapheme"
+    });
+    return [...segmenter.segment(input)].length;
 }
