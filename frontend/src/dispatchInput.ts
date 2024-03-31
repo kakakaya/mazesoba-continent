@@ -17,33 +17,26 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
         switch (args.at(0)) {
             case "/help":
                 const helpArgs = args.slice(1);
-                if (dryRun) {
-                    return Promise.resolve(`Open help for ${helpArgs.join(" ")}`);
-                } else {
-                    return helpCommand(...helpArgs)
-                }
+                return executeOrDryRun(dryRun, `Open help for ${helpArgs.join(" ")}`, helpCommand, ...helpArgs)
             case "/open":
                 const openTarget = args.at(1)
                 switch (openTarget) {
                     case "search":
                         const searchArgs = args.slice(2);
-                        if (dryRun) {
-                            return Promise.resolve(`Search ${searchArgs.join(" ")}`);
-                        } else {
-                            return searchCommand(...searchArgs)
-                        }
+                        return executeOrDryRun(dryRun, `Search ${searchArgs.join(" ")}`, searchCommand, ...searchArgs)
                     case "weather":
                         const addressArgs = args.slice(2);
-                        if (dryRun) {
-                            return Promise.resolve(`${addressArgs.join(" ")}の天気を開く`);
-                        } else {
-                            return weatherCommand(...addressArgs)
-                        }
+                        return executeOrDryRun(dryRun, `${addressArgs.join(" ")}の天気を開く`, weatherCommand, ...addressArgs)
                     default:
                         return Promise.reject(`😕「${openTarget}の開き方がわからないよ」`)
                 }
             default:
-                return Promise.reject(`😕「${args.at(0)}の仕方がわからないよ」`)
+                if (dryRun) {
+                    return Promise.resolve(`Post: ${input}`);
+                } else {
+                    return Promise.reject(`😕「${args.at(0)}の仕方がわからないよ」`)
+                }
+                
         }
     }
     if (dryRun) {
@@ -51,6 +44,17 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
     }
     return Post(input)
 }
+
+// A function which executes and returns given command if dryRun = false
+// otherwise returns a string which describes what the command will do
+function executeOrDryRun(dryRun: boolean, description: string, command: (...args: string[]) => Promise<string>, ...args: string[]): Promise<string> {
+    if (dryRun) {
+        return Promise.resolve(description);
+    } else {
+        return command(...args);
+    }
+}
+
 
 export function helpCommand(...topics: string[]): Promise<string> {
     const README = 'https://github.com/kakakaya/mazesoba-continent/blob/main/README.md'
