@@ -2,6 +2,7 @@ import { expect, it, describe, vi, afterEach, assert, beforeAll } from 'vitest'
 import { dispatchInput, countGrapheme, countBytes, weatherCommand, searchCommand } from './dispatchInput'
 import {
     Post,
+    Chikuwa,
 } from '../wailsjs/go/main/App.js'
 import {
     BrowserOpenURL,
@@ -10,6 +11,7 @@ import {
 
 vi.mock('../wailsjs/go/main/App.js', () => ({
     Post: vi.fn(),
+    Chikuwa: vi.fn(),
 }))
 vi.mock('../wailsjs/runtime/runtime.js', () => ({
     BrowserOpenURL: vi.fn(),
@@ -57,6 +59,7 @@ describe('dispatchInput', () => {
         { input: "/open search foo", expected: "https://bsky.app/search?q=foo" },
         { input: "/open search まぜそば大陸", expected: "https://bsky.app/search?q=%E3%81%BE%E3%81%9C%E3%81%9D%E3%81%B0%E5%A4%A7%E9%99%B8" },
         { input: "/open search two words", expected: "https://bsky.app/search?q=two%20words" },
+        { input: "/open s you can use s for short s", expected: "https://bsky.app/search?q=you%20can%20use%20s%20for%20short%20s" },
     ])(`Open search page if input=$input`, async ({ input, expected }) => {
         let resOk = '', resFail = ''
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
@@ -76,6 +79,16 @@ describe('dispatchInput', () => {
         expect(BrowserOpenURL).toHaveBeenCalledWith(expected)
     })
 
+    it.each([
+        { input: "/open profile kakakaya.xyz", expected: "https://bsky.app/profile/kakakaya.xyz" },
+    ])(`Open profile page if input=$input`, async ({ input, expected }) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        expect(resOk).toContain(expected)
+        assert.equal(resFail, '')
+        expect(BrowserOpenURL).toHaveBeenCalledWith(expected)
+    })
+
     it('Rejects if open target is not recognized', async () => {
         const input = '/open unknown-target'
         let resOk = '', resFail = ''
@@ -83,6 +96,21 @@ describe('dispatchInput', () => {
         assert.equal(resOk, '')
         assert.notEqual(resFail, '')
         expect(BrowserOpenURL).not.toHaveBeenCalled()
+        expect(Post).not.toHaveBeenCalled()
+    })
+
+    it.each([
+        { input: '/post chikuwa', expected: "ちくわ。" },
+        //{ input: '/post ckw', expected: "ちくわ。" },
+        //{ input: '/post eq', expected: "地震だ！" },
+        //{ input: '/post earthquake', expected: "地震だ！" },
+        //          { input: '/post version', expected: "まぜそば大陸バージョン" },
+    ])('Posts text if input=$input', async ({ input, expected }) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        expect(resOk).toContain(expected)
+        assert.equal(resFail, '')
+        expect(Chikuwa).toHaveBeenCalledWith(expected)
         expect(Post).not.toHaveBeenCalled()
     })
 
@@ -117,10 +145,10 @@ describe('dispatchInput with dryrun', () => {
     })
 
     it.each([
-        // { input: "/help", expected: 'READMEを開く' },
-        // { input: "/help command", expected: 'スラッシュコマンドのヘルプを開く' },
-        // { input: "/help config", expected: '設定のヘルプを開く' },
-        { input: "/open weather 東京", expected: '東京の天気を調べる' },
+        { input: "/help", expected: 'READMEを開く' },
+        { input: "/help command", expected: 'スラッシュコマンドについて' },
+        { input: "/help config", expected: '設定について' },
+        { input: "/open weather 東京", expected: '天気を調べる：東京' },
     ])('Returns help message if dryRun is true', async ({ input, expected }) => {
         let resOk = '', resFail = ''
         await dispatchInput(input, true).then((res) => { resOk = res }).catch((res) => { resFail = res })

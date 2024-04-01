@@ -1,11 +1,16 @@
 
 import {
     Post,
+    Chikuwa,
+    OpenConfigDirectory,
+    OpenLogDirectory,
 } from '../wailsjs/go/main/App.js'
 
 import {
     BrowserOpenURL,
 } from '../wailsjs/runtime/runtime.js'
+
+const WAIT_FOR_INPUT_MESSAGE = "..."
 
 export function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
     // 1. /で始まる場合はコマンドとして処理
@@ -16,30 +21,62 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
         const args = input.split(" ");
         switch (args.at(0)) {
             case "/help":
-                const helpArgs = args.slice(1);
-                return executeOrDryRun(dryRun, `Open help for ${helpArgs.join(" ")}`, helpCommand, ...helpArgs)
+                const helpTopic = args.at(1) || "";
+                const helpArgs = args.slice(2);
+                switch (helpTopic) {
+                    case "":
+                        return executeOrDryRun(dryRun, `READMEを開く`, helpCommand, ...helpArgs)
+                    case "command":
+                        return executeOrDryRun(dryRun, `スラッシュコマンドについて`, helpCommand, "command", ...helpArgs)
+                    case "config":
+                    case "setting":
+                    case "settings":
+                        return executeOrDryRun(dryRun, `設定について`, helpCommand, "config", ...helpArgs)
+                    default:
+                        return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${helpTopic}ってなに？」`)
+                }
             case "/open":
                 const openTarget = args.at(1) || "";
                 switch (openTarget) {
                     case "search":
+                    case "s":
                         const searchArgs = args.slice(2);
-                        return executeOrDryRun(dryRun, `Search ${searchArgs.join(" ")}`, searchCommand, ...searchArgs)
+                        return executeOrDryRun(dryRun, `検索：${searchArgs.join(" ")}`, searchCommand, ...searchArgs)
                     case "weather":
                         const addressArgs = args.slice(2);
-                        return executeOrDryRun(dryRun, `${addressArgs.join(" ")}の天気を調べる`, weatherCommand, ...addressArgs)
+                        return executeOrDryRun(dryRun, `天気を調べる：${addressArgs.join(" ")}`, weatherCommand, ...addressArgs)
+                    case "profile":
+                        const profileId = args.at(2) || "";
+                        return executeOrDryRun(dryRun, `プロフィールを開く：${profileId}`, openProfileCommand, profileId)
+                    case "config":
+                    case "setting":
+                    case "settings":
+                        // Return "Opened config directory" message using executeOrDryRun
+                        return executeOrDryRun(dryRun, "設定ファイルの場所を開く", () => OpenConfigDirectory().then(() => "Opened config directory"))
+                    case "log":
+                        // Return "Opened log directory" message using executeOrDryRun
+                        return executeOrDryRun(dryRun, "ログの場所を開く", () => OpenLogDirectory().then(() => "Opened log directory"))
                     default:
                         // If dryRun is false, 
                         // return a string that describes openTarget is invalid, with suitable emoji.
                         // otherwise, return a string that app is waiting for next input, with suitable emoji.
-                        if (dryRun) {
-                            return Promise.reject(`...`)
-                        } else {
-                            return Promise.reject(`😕「${openTarget}ってなに？」`)
-                        }
+                        return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${openTarget}ってなに？」`)
+                }
+            case "/post":
+                const postArgs = args.slice(1);
+                return executeOrDryRun(dryRun, `投稿：${postArgs.join(" ")}`, Chikuwa, postArgs.join(" "))
+            case "/mzsb":
+                const mzsbTarget = args.at(1) || "";
+                switch (mzsbTarget) {
+                    case "egosearch":
+                    case "egs":
+                        return executeOrDryRun(dryRun, "エゴサーチ", searchCommand, "まぜそば大陸")
+                    default:
+                        return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${mzsbTarget}ってなに？」`)
                 }
             default:
                 if (dryRun) {
-                    return Promise.reject(`...`);
+                    return Promise.reject(WAIT_FOR_INPUT_MESSAGE);
                 } else {
                     return Promise.reject(`😕「${args.at(0)}の仕方がわからないよ」`)
                 }
@@ -102,6 +139,12 @@ export function weatherCommand(...addressArgs: string[]): Promise<string> {
     return Promise.resolve(`Open: ${url}`)
 }
 
+export function openProfileCommand(profileId: string): Promise<string> {
+    // TODO: Merge this function with searchCommand
+    const url = `https://bsky.app/profile/${profileId}`
+    BrowserOpenURL(url)
+    return Promise.resolve(`Open: ${url}`)
+}
 
 export function countGrapheme(input: string): number {
     const segmenter = new Intl.Segmenter("ja", {
