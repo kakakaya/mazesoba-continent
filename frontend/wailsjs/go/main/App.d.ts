@@ -5,6 +5,8 @@ export function Chikuwa(arg1:string):Promise<string>;
 
 export function DispatchCommand(arg1:string):Promise<string>;
 
+export function GetContext():Promise<string>;
+
 export function OpenConfigDirectory():Promise<void>;
 
 export function OpenLogDirectory():Promise<void>;
