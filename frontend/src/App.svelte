@@ -2,6 +2,8 @@
     import {
         OpenConfigDirectory,
         OpenLogDirectory,
+        GetContext,
+        Chikuwa,
     } from "../wailsjs/go/main/App";
 
     import {
@@ -12,6 +14,7 @@
         WindowShow,
         Quit,
         LogInfo,
+        LogWarning,
     } from "../wailsjs/runtime/runtime.js";
     import { dispatchInput } from "./dispatchInput.js";
 
@@ -40,22 +43,26 @@
                     charCounter = parseInt(result);
                     helpMessage = "";
                 } else {
+                    charCounter = 0;
                     helpMessage = result;
                 }
             })
             .catch((error) => {
-                helpMessage = `${error}`;
+                charCounter = 0;
+                helpMessage = error;
             });
     }
 
     function executeInput() {
-        dispatchInput(input, false).then((result) => {
-            clearText();
-            placeholder = result;
-        }).catch((error) => {
-            clearText();
-            helpMessage = `Error: ${error}`;
-        })
+        dispatchInput(input, false)
+            .then((result) => {
+                clearText();
+                placeholder = result;
+            })
+            .catch((error) => {
+                clearText();
+                helpMessage = `Error: ${error}`;
+            });
     }
     function handleKeyDown(event: KeyboardEvent) {
         // Press Ctrl+Enter to send message
@@ -67,7 +74,25 @@
         // Press Ctrl+, to show settings
         if ((event.ctrlKey || event.metaKey) && event.key === ",") {
             event.preventDefault();
-            EventsEmit("call-showSettings");
+            OpenConfigDirectory();
+        }
+
+        // Press Ctrl+. to show settings
+        if ((event.ctrlKey || event.metaKey) && event.key === ".") {
+            event.preventDefault();
+            OpenLogDirectory();
+        }
+
+        // Press Ctrl+F2 to post "earthquake"
+        if ((event.ctrlKey || event.metaKey) && event.key === "F2") {
+            event.preventDefault();
+            Chikuwa("地震だ！")
+                .then((result) => {
+                    placeholder = result;
+                })
+                .catch((error) => {
+                    helpMessage = `Error: ${error}`;
+                });
         }
     }
     // Setup Events

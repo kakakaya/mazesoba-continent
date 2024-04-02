@@ -4,6 +4,7 @@ import {
     Chikuwa,
     OpenConfigDirectory,
     OpenLogDirectory,
+    GetContext,
 } from '../wailsjs/go/main/App.js'
 
 import {
@@ -63,8 +64,29 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                         return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${openTarget}ってなに？」`)
                 }
             case "/post":
-                const postArgs = args.slice(1);
-                return executeOrDryRun(dryRun, `投稿：${postArgs.join(" ")}`, Chikuwa, postArgs.join(" "))
+                const postTarget = args.at(1) || "";
+                switch (postTarget) {
+                    case "chikuwa":
+                    case "ckw":
+                        return executeOrDryRun(dryRun, `ちくわ。`, Chikuwa, "ちくわ。")
+                    case "earthquake":
+                    case "eq":
+                        return executeOrDryRun(dryRun, `地震だ！`, Chikuwa, "地震だ！")
+                    case "version":
+                    case "ver":
+                        let AppContext: {version: string} = {version: ""};
+                        return GetContext()
+                            .then((context) => {
+                                AppContext = JSON.parse(context);
+                                const Version = AppContext.version;
+                                return executeOrDryRun(dryRun, `バージョン情報： ${Version}`, Chikuwa, `まぜそば大陸バージョン${Version}が浮上中`);
+                            })
+                            .catch((err) => {
+                                return Promise.reject(err);
+                            });
+                    default:
+                        return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${postTarget}ってなに？」`)
+                }
             case "/mzsb":
                 const mzsbTarget = args.at(1) || "";
                 switch (mzsbTarget) {
