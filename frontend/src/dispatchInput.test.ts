@@ -5,16 +5,17 @@ import {
     Chikuwa,
 } from '../wailsjs/go/main/App.js'
 import {
-    BrowserOpenURL,
+    BrowserOpenURL, Quit,
 } from '../wailsjs/runtime/runtime.js'
 
 
 vi.mock('../wailsjs/go/main/App.js', () => ({
+    Chikuwa: vi.fn().mockImplementation(async () => Promise.resolve('MOCK URI')),
     Post: vi.fn(),
-    Chikuwa: vi.fn(),
 }))
 vi.mock('../wailsjs/runtime/runtime.js', () => ({
     BrowserOpenURL: vi.fn(),
+    Quit: vi.fn(),
 }))
 
 
@@ -107,8 +108,10 @@ describe('dispatchInput', () => {
         //          { input: '/post version', expected: "まぜそば大陸バージョン" },
     ])('Posts text if input=$input', async ({ input, expected }) => {
         let resOk = '', resFail = ''
+        let p = dispatchInput(input)
+        expect(p).toBeInstanceOf(Promise)
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
-        expect(resOk).toContain(expected)
+        expect(resOk).toBe(expected)
         assert.equal(resFail, '')
         expect(Chikuwa).toHaveBeenCalledWith(expected)
         expect(Post).not.toHaveBeenCalled()
@@ -121,6 +124,16 @@ describe('dispatchInput', () => {
         assert.equal(resOk, '')
         assert.notEqual(resFail, '')
         expect(BrowserOpenURL).not.toHaveBeenCalled()
+        expect(Post).not.toHaveBeenCalled()
+    })
+
+    it('Quit if input is /quit', async () => {
+        const input = '/quit'
+        let resOk = '', resFail = ''
+        await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        assert.equal(resOk, '沈没！') // This won't be showed in the app
+        assert.equal(resFail, '')
+        expect(Quit).toHaveBeenCalled()
         expect(Post).not.toHaveBeenCalled()
     })
 })

@@ -8,7 +8,7 @@ import {
 } from '../wailsjs/go/main/App.js'
 
 import {
-    BrowserOpenURL,
+    BrowserOpenURL, Quit,
 } from '../wailsjs/runtime/runtime.js'
 
 const WAIT_FOR_INPUT_MESSAGE = "..."
@@ -96,6 +96,11 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                     default:
                         return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${mzsbTarget}ってなに？」`)
                 }
+            case "/quit":
+                return executeOrDryRun(dryRun, "沈没", () => {
+                    Quit();
+                    return Promise.resolve("沈没！");
+                });
             default:
                 if (dryRun) {
                     return Promise.reject(WAIT_FOR_INPUT_MESSAGE);
