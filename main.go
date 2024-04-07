@@ -23,7 +23,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const Version = "v14"
+const Version = "v15"
 
 func main() {
 	// Create an instance of the app structure
@@ -60,21 +60,6 @@ func main() {
 	FileMenu := AppMenu.AddSubmenu("ファイル")
 	FileMenu.AddText("沈没", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		runtime.Quit(app.ctx)
-	})
-	FileMenu.AddText("Post", keys.CmdOrCtrl("Enter"), func(_ *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "call-post")
-	})
-	FileMenu.AddText("設定の場所を開く", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
-		app.OpenConfigDirectory()
-	})
-	FileMenu.AddText("ログの場所を開く", keys.CmdOrCtrl("."), func(_ *menu.CallbackData) {
-		app.OpenLogDirectory()
-	})
-
-	// BlueskyCommandMenu := CommandMenu.AddSubmenu("Bluesky")
-	WindowMenu := AppMenu.AddSubmenu("Window")
-	WindowMenu.AddText("中央に移動する", nil, func(_ *menu.CallbackData) {
-		runtime.WindowCenter(app.ctx)
 	})
 
 	if app.environment.Platform == "darwin" {

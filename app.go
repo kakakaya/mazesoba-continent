@@ -246,3 +246,20 @@ func (a *App) SetScheduler() error {
 	// err = s.Shutdown()
 	return nil
 }
+
+type AppContext struct {
+	// AppContext is a struct that contains the context of the app.
+	// It can be used to marshalize the context to JSON.
+	// This struct is intended to be used by the frontend.
+	Version string `json:"version"`
+}
+
+func (a *App) GetContext() string {
+	// Return AppContext in Marshalized JSON
+	// Intended to be used by the frontend.
+	ac := AppContext{
+		Version: Version,
+	}
+	data, _ := json.Marshal(ac)
+	return string(data)
+}
