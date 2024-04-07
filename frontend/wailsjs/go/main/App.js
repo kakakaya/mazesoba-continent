@@ -10,6 +10,10 @@ export function DispatchCommand(arg1) {
   return window['go']['main']['App']['DispatchCommand'](arg1);
 }
 
+export function GetContext() {
+  return window['go']['main']['App']['GetContext']();
+}
+
 export function OpenConfigDirectory() {
   return window['go']['main']['App']['OpenConfigDirectory']();
 }
