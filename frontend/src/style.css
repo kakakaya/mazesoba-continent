@@ -112,13 +112,12 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: yellow;
+    /* background-color: yellow; */
     display: flex;
     color: white;
     padding: 0px;
     justify-content: flex-end;
-
-    border-top: 1px solid #999;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 
     text-align: left;
 }
@@ -130,17 +129,17 @@ body {
 
 #char-counter {
     color: white;
-    background-color: yellowgreen;
+    /* background-color: yellowgreen; */
     padding: 5px;
     border-radius: 5px;
 }
 
 #message {
-    background-color: royalblue;
+    /* background-color: royalblue; */
 }
 
 #footer {
-    background-color: hotpink;
+    /* background-color: hotpink; */
 }
 
 .char-count {
