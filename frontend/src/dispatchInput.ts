@@ -13,7 +13,7 @@ import {
 
 const WAIT_FOR_INPUT_MESSAGE = "..."
 
-export function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
+export async function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
     // 1. /で始まる場合はコマンドとして処理
     // 2. 通常のメッセージの場合はそのままPost
 
@@ -68,14 +68,15 @@ export function dispatchInput(input: string, dryRun: boolean = false): Promise<s
                 switch (postTarget) {
                     case "chikuwa":
                     case "ckw":
-                        return executeOrDryRun(dryRun, `ちくわ。`, Chikuwa, "ちくわ。")
+                        const res = await executeOrDryRun(dryRun, `ちくわ。`, Chikuwa, "ちくわ。")
+                        return res
                     case "earthquake":
                     case "eq":
                         return executeOrDryRun(dryRun, `地震だ！`, Chikuwa, "地震だ！")
                     case "version":
                     case "ver":
-                        let AppContext: {version: string} = {version: ""};
-                        return GetContext()
+                        let AppContext: { version: string } = { version: "" };
+                        return await GetContext()
                             .then((context) => {
                                 AppContext = JSON.parse(context);
                                 const Version = AppContext.version;

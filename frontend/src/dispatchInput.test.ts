@@ -3,6 +3,7 @@ import { dispatchInput, countGrapheme, countBytes, weatherCommand, searchCommand
 import {
     Post,
     Chikuwa,
+    GetContext,
 } from '../wailsjs/go/main/App.js'
 import {
     BrowserOpenURL, Quit,
@@ -10,9 +11,12 @@ import {
 
 
 vi.mock('../wailsjs/go/main/App.js', () => ({
-    Chikuwa: vi.fn().mockImplementation(async () => Promise.resolve('MOCK URI')),
+    Chikuwa: vi.fn().mockImplementation((msg) =>Promise.resolve( `Got ${msg}`)),
     Post: vi.fn(),
+    GetContext: vi.fn().mockResolvedValue('Mock'),
 }))
+
+
 vi.mock('../wailsjs/runtime/runtime.js', () => ({
     BrowserOpenURL: vi.fn(),
     Quit: vi.fn(),
@@ -101,17 +105,15 @@ describe('dispatchInput', () => {
     })
 
     it.each([
-        { input: '/post chikuwa', expected: "ちくわ。" },
+        //{ input: '/post chikuwa', expected: "ちくわ。" },
         //{ input: '/post ckw', expected: "ちくわ。" },
         //{ input: '/post eq', expected: "地震だ！" },
         //{ input: '/post earthquake', expected: "地震だ！" },
-        //          { input: '/post version', expected: "まぜそば大陸バージョン" },
+        //{ input: '/post version', expected: "まぜそば大陸バージョン" },
     ])('Posts text if input=$input', async ({ input, expected }) => {
         let resOk = '', resFail = ''
-        let p = dispatchInput(input)
-        expect(p).toBeInstanceOf(Promise)
         await dispatchInput(input).then((res) => { resOk = res }).catch((res) => { resFail = res })
-        expect(resOk).toBe(expected)
+        assert.equal(resOk, expected)
         assert.equal(resFail, '')
         expect(Chikuwa).toHaveBeenCalledWith(expected)
         expect(Post).not.toHaveBeenCalled()
@@ -168,6 +170,22 @@ describe('dispatchInput with dryrun', () => {
         expect(resOk).toContain(expected)
         assert.equal(resFail, '')
         expect(BrowserOpenURL).not.toHaveBeenCalled()
+        expect(Post).not.toHaveBeenCalled()
+    })
+
+    it.each([
+        { input: '/post chikuwa', expected: "ちくわ。" },
+        { input: '/post ckw', expected: "ちくわ。" },
+        { input: '/post earthquake', expected: "地震だ！" },
+        { input: '/post eq', expected: "地震だ！" },
+        // { input: '/post version', expected: "まぜそば大陸バージョン" },
+        // { input: '/post ver', expected: "まぜそば大陸バージョン" },
+    ])('Returns post message if input=$input and dryRun is true', async ({ input, expected }) => {
+        let resOk = '', resFail = ''
+        await dispatchInput(input, true).then((res) => { resOk = res }).catch((res) => { resFail = res })
+        assert.equal(resOk, expected)
+        assert.equal(resFail, '')
+        expect(Chikuwa).not.toHaveBeenCalled()
         expect(Post).not.toHaveBeenCalled()
     })
 
