@@ -27,3 +27,10 @@ export const OverLimit: Story = {
         count: 301,
     },
 };
+
+export const Hidden: Story = {
+    args: {
+        hidden: true,
+        count: 0,
+    },
+};
