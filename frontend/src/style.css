@@ -97,15 +97,6 @@ body {
         url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
 }
 
-#inputbox {
-    background: transparent;
-    color: white;
-    height: 95vh;
-    width: 100vw;
-    resize: none;
-    border: none;
-    outline: none;
-}
 
 #status-bar {
     /* position: absolute; */
