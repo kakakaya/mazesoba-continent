@@ -14,7 +14,7 @@
     !define INFO_PRODUCTNAME "まぜそば大陸"
 !endif
 !ifndef INFO_PRODUCTVERSION
-    !define INFO_PRODUCTVERSION "15.0.0"
+    !define INFO_PRODUCTVERSION "16.0.0"
 !endif
 !ifndef INFO_COPYRIGHT
     !define INFO_COPYRIGHT "Copyright 2023-2024 kakakaya"
