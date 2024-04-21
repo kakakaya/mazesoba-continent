@@ -90,3 +90,62 @@ textarea:not([rows]) {
     scroll-margin-block: 5ex;
 }
 
+/* mazesoba css */
+html,
+body {
+    font-family:
+        "Noto Sans JP",
+        "Noto Color Emoji",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Fira Sans",
+        "Droid Sans",
+        "Helvetica Neue",
+        sans-serif;
+    background: transparent;
+    background-color: rgba(27, 38, 54, 1);
+    text-align: center;
+    height: 100%;
+}
+
+/* noto-sans-jp-500 - japanese_latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Noto Sans JP';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/noto-sans-jp-v52-japanese_latin-500.woff2') format('woff2');
+}
+
+/* noto-sans-jp-500 - japanese_latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Noto Color Emoji';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/noto-color-emoji-v30-emoji-regular.woff2') format('woff2');
+}
+
+
+#message {
+    background-color: royalblue;
+}
+
+#footer {
+    /* background-color: hotpink; */
+}
+
+CharCounter {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    color: black;
+    background-color: white;
+    padding: 2px 5px;
+}
