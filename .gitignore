@@ -16,3 +16,5 @@
 node_modules
 /build/bin
 /build/windows/installer/tmp/
+
+*storybook.log

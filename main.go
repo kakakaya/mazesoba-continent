@@ -23,7 +23,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const Version = "v15"
+const Version = "v16"
 
 func main() {
 	// Create an instance of the app structure
