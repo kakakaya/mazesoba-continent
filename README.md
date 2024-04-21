@@ -3,7 +3,7 @@
 ![Screenshot](https://raw.githubusercontent.com/kakakaya/mazesoba-continent/main/docs/images/screenshot.png)
 
 [![GitHub Release Date](https://img.shields.io/github/release-date/kakakaya/mazesoba-continent?style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
-[![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/kakakaya/mazesoba-continent/latest/total?sort=semver&style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
+[![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/kakakaya/mazesoba-continent/total?sort=semver&style=flat)](https://github.com/kakakaya/mazesoba-continent/releases)
 [![GitHub License](https://img.shields.io/github/license/kakakaya/mazesoba-continent?style=flat)](https://github.com/kakakaya/mazesoba-continent?tab=MIT-1-ov-file#readme)
 [![GitHub Repo stars](https://img.shields.io/github/stars/kakakaya/mazesoba-continent)](https://github.com/kakakaya/mazesoba-continent)
 [![codecov](https://codecov.io/gh/kakakaya/mazesoba-continent/branch/master/graph/badge.svg)](https://codecov.io/gh/kakakaya/mazesoba-continent)
