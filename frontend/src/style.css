@@ -94,8 +94,6 @@ textarea:not([rows]) {
 html,
 body {
     font-family:
-        "Noto Sans JP",
-        "Noto Color Emoji",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -108,9 +106,8 @@ body {
         "Helvetica Neue",
         sans-serif;
     background: transparent;
-    background-color: rgba(27, 38, 54, 1);
     text-align: center;
-    height: 100%;
+    margin: 0;
 }
 
 /* noto-sans-jp-500 - japanese_latin */
