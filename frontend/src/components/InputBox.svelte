@@ -6,12 +6,12 @@
 <textarea
     class="inputbox"
     autocomplete="off"
-    bind:value={value}
+    bind:value
     {placeholder}
+    on:input
+    on:keydown
 />
 
-<!-- on:input={onInputChange}
-    on:keydown={handleKeyDown} -->
 <style>
     .inputbox {
         background: transparent;
