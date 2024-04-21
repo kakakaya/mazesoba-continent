@@ -11,7 +11,7 @@
 <div class="status-bar">
     <div class="message status-element">{helpMessage}</div>
     <div class="footer">{postFooter}</div>
-    <CharCounter class='status-element' count={charCount} max_count={maxCount} />
+    <CharCounter count={charCount} max_count={maxCount} />
 </div>
 
 <style>
