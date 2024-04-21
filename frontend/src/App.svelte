@@ -5,17 +5,19 @@
         GetContext,
         Chikuwa,
     } from "../wailsjs/go/main/App";
+    import InputBox from "./components/InputBox.svelte";
+    import StatusBar from "./components/StatusBar.svelte";
 
-    import {
-        EventsOn,
-        EventsEmit,
-        WindowCenter,
-        WindowHide,
-        WindowShow,
-        Quit,
-        LogInfo,
-        LogWarning,
-    } from "../wailsjs/runtime/runtime.js";
+    // import {
+    //     EventsOn,
+    //     EventsEmit,
+    //     WindowCenter,
+    //     WindowHide,
+    //     WindowShow,
+    //     Quit,
+    //     LogInfo,
+    //     LogWarning,
+    // } from "../wailsjs/runtime/runtime";
     import { dispatchInput } from "./dispatchInput.js";
 
     import { ConvertRichUnicode } from "./topping/unicode";
@@ -23,12 +25,12 @@
     let input: string = "";
     let helpMessage = "Ready";
     let postFooter = "";
-    let charCounter = 0;
+    let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
 
     function clearText() {
         input = "";
-        charCounter = 0;
+        charCount = 0;
         const inputBox = document.getElementById("inputbox");
         if (inputBox) {
             inputBox.removeAttribute("readonly");
@@ -36,56 +38,61 @@
         }
     }
 
-    function onInputChange() {
+    function handleInput() {
         dispatchInput(input, true)
             .then((result) => {
                 if (/^\d+$/.test(result)) {
-                    charCounter = parseInt(result);
+                    charCount = parseInt(result);
                     helpMessage = "";
                 } else {
-                    charCounter = 0;
+                    charCount = 0;
                     helpMessage = result;
                 }
             })
             .catch((error) => {
-                charCounter = 0;
+                charCount = 0;
                 helpMessage = error;
             });
     }
 
     function executeInput() {
-        dispatchInput(input, false)
+        // Store current input value and clear input
+        const currentInput = input;
+        clearText();
+        placeholder = "送信中...";
+        dispatchInput(currentInput, false)
             .then((result) => {
-                clearText();
                 placeholder = result;
             })
             .catch((error) => {
-                clearText();
                 helpMessage = `Error: ${error}`;
             });
     }
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(keyEvent: KeyboardEvent) {
         // Press Ctrl+Enter to send message
-        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-            event.preventDefault();
+        if (
+            (keyEvent.ctrlKey || keyEvent.metaKey) &&
+            keyEvent.key === "Enter"
+        ) {
+            keyEvent.preventDefault();
             executeInput();
         }
 
         // Press Ctrl+, to show settings
-        if ((event.ctrlKey || event.metaKey) && event.key === ",") {
-            event.preventDefault();
+        if ((keyEvent.ctrlKey || keyEvent.metaKey) && keyEvent.key === ",") {
+            keyEvent.preventDefault();
             OpenConfigDirectory();
         }
 
         // Press Ctrl+. to show settings
-        if ((event.ctrlKey || event.metaKey) && event.key === ".") {
-            event.preventDefault();
+        if ((keyEvent.ctrlKey || keyEvent.metaKey) && keyEvent.key === ".") {
+            keyEvent.preventDefault();
             OpenLogDirectory();
         }
 
         // Press Ctrl+F2 to post "earthquake"
-        if ((event.ctrlKey || event.metaKey) && event.key === "F2") {
-            event.preventDefault();
+        if ((keyEvent.ctrlKey || keyEvent.metaKey) && keyEvent.key === "F2") {
+            keyEvent.preventDefault();
             Chikuwa("地震だ！")
                 .then((result) => {
                     placeholder = result;
@@ -95,24 +102,23 @@
                 });
         }
     }
-    // Setup Events
-    EventsOn("call-clearText", () => {
-        clearText();
-    });
 </script>
 
-<main style="--wails-draggable:drag">
-    <textarea
-        autocomplete="off"
+<body>
+    <InputBox
         bind:value={input}
-        on:input={onInputChange}
         on:keydown={handleKeyDown}
+        on:input={handleInput}
         {placeholder}
-        id="inputbox"
     />
-    <div id="status-bar">
-        <div id="footer">{postFooter}</div>
-        <div id="message">{helpMessage}</div>
-        <div id="char-counter">{charCounter}</div>
-    </div>
-</main>
+    <StatusBar {postFooter} {helpMessage} {charCount} maxCount={300} />
+</body>
+
+<style>
+    body {
+        --wails-draggable: drag;
+        background-color: rgba(27, 38, 54, 0.5);
+        height: 100vh;
+        width: 100vw;
+    }
+</style>
