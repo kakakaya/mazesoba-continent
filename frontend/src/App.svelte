@@ -39,7 +39,6 @@
     }
 
     function handleInput() {
-        charCount = Math.random() * 100;
         dispatchInput(input, true)
             .then((result) => {
                 if (/^\d+$/.test(result)) {
@@ -57,9 +56,11 @@
     }
 
     function executeInput() {
+        // Store current input value and clear input
+        const currentInput = input;
         clearText();
         placeholder = "送信中...";
-        dispatchInput(input, false)
+        dispatchInput(currentInput, false)
             .then((result) => {
                 placeholder = result;
             })
@@ -67,8 +68,7 @@
                 helpMessage = `Error: ${error}`;
             });
     }
-    function handleKeyDown(event: CustomEvent<KeyboardEvent>) {
-        const keyEvent: KeyboardEvent = event.detail;
+    function handleKeyDown(keyEvent: KeyboardEvent) {
         // Press Ctrl+Enter to send message
         if (
             (keyEvent.ctrlKey || keyEvent.metaKey) &&
@@ -104,12 +104,21 @@
     }
 </script>
 
-<main style="--wails-draggable:drag">
+<body>
     <InputBox
         bind:value={input}
-        on:input={handleInput}
         on:keydown={handleKeyDown}
+        on:input={handleInput}
         {placeholder}
     />
     <StatusBar {postFooter} {helpMessage} {charCount} maxCount={300} />
-</main>
+</body>
+
+<style>
+    body {
+        --wails-draggable: drag;
+        background-color: rgba(27, 38, 54, 0.5);
+        height: 100vh;
+        width: 100vw;
+    }
+</style>

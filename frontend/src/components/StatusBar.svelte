@@ -4,14 +4,13 @@
     export let helpMessage: string = "";
     export let postFooter: string = "";
     export let charCount: number = 0;
-    export let footer: string = "";
     export let maxCount: number;
 </script>
 
 <div class="status-bar">
     <div class="message status-element">{helpMessage}</div>
-    <div class="footer">{postFooter}</div>
-    <CharCounter count={charCount} max_count={maxCount} />
+    <div class="footer">{postFooter}</div>    
+    <CharCounter count={charCount} maxCount={maxCount} hidden />
 </div>
 
 <style>
@@ -27,7 +26,7 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         flex-wrap: wrap;
         justify-content: flex-end;
-        gap: 0em 1em;
+        gap: 0em 0.2em;
     }
 
     .status-bar > div {
