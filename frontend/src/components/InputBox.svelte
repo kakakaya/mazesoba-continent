@@ -1,31 +1,12 @@
 <script lang="ts">
-    let input: string = "";
-    let helpMessage = "Ready";
-    let postFooter = "";
-    let charCounter = 0;
-    let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
-
-    function clearText() {
-        input = "";
-        charCounter = 0;
-        const inputBox = document.getElementById("inputbox");
-        if (inputBox) {
-            inputBox.removeAttribute("readonly");
-            inputBox.focus();
-        }
-    }
-
-    function handleKeyDown(event: number) {
-        if (event.key === "Enter") {
-            executeInput();
-        }
-    }
+    export let value: string;
+    export let placeholder: string = '';
 </script>
 
 <textarea
     class="inputbox"
     autocomplete="off"
-    bind:value={input}
+    bind:value={value}
     {placeholder}
 />
 
@@ -41,6 +22,7 @@
         width: 100%;
         resize: none;
         border: none;
+        padding: 0px;
         outline: none;
     }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
     export let count = 0;
-    export let max_count = 300;  // default value is for Bluesky
+    export let max_count = 300; // default value is for Bluesky
     export let hidden: boolean = false;
 </script>
 
@@ -14,8 +14,8 @@
 
 <style>
     .char-counter {
-        color: #333;
         width: min-content;
+        padding: 0.2em;
     }
     .char-counter--warning {
         background-color: #ffcccc;
