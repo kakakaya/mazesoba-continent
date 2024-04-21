@@ -88,6 +88,13 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     default:
                         return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${postTarget}ってなに？」`)
                 }
+            case "/pizza":
+                const pizzaAddress = args.slice(1).join("");
+                // Check if pizzaAddress is 7 digits using regex
+                if (!/^\d{7}$/.test(pizzaAddress)) {
+                    return Promise.reject(dryRun ?  `ピザを注文する：〒${pizzaAddress}` : "😕「郵便番号を7桁の数字で入力してね」")
+                }
+                return executeOrDryRun(dryRun, `ピザを注文する：〒${pizzaAddress}`, pizzaCommand, pizzaAddress)
             case "/mzsb":
                 const mzsbTarget = args.at(1) || "";
                 switch (mzsbTarget) {
@@ -163,6 +170,13 @@ export function weatherCommand(...addressArgs: string[]): Promise<string> {
     const params = encodeURIComponent(addressArgs.join(' '))
     const url = `https://tenki.jp/search/?keyword=${params}`
 
+    BrowserOpenURL(url)
+    return Promise.resolve(`Open: ${url}`)
+}
+
+export function pizzaCommand(pizzaAddress: string): Promise<string> {
+    // Order Pizzahut pizza
+    const url = `https://www.pizzahut.jp/localization/${pizzaAddress}`
     BrowserOpenURL(url)
     return Promise.resolve(`Open: ${url}`)
 }
