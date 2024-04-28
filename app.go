@@ -19,6 +19,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+// Types / Functions under app.go are intended to be used from frontend.
+
 // App struct
 type App struct {
 	config      Config
@@ -251,14 +253,18 @@ type AppContext struct {
 	// AppContext is a struct that contains the context of the app.
 	// It can be used to marshalize the context to JSON.
 	// This struct is intended to be used by the frontend.
+	Identifier string `json:"id"`
+	Host string `json:"host"`
 	Version string `json:"version"`
 }
 
 func (a *App) GetContext() string {
-	// Return AppContext in Marshalized JSON
+	// Return AppContext incred. Marshalized JSON
 	// Intended to be used by the frontend.
 	ac := AppContext{
 		Version: Version,
+		Identifier: a.config.Credential.Identifier,
+		Host: a.config.Credential.Host,
 	}
 	data, _ := json.Marshal(ac)
 	return string(data)
