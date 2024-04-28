@@ -28,15 +28,15 @@
     let postFooter = "";
     let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
-     GetContext().then((context) => {
-                                const ctx = JSON.parse(context);
-                                const Version = ctx.version;
-                                helpMessage = `Ready: ${ctx.id}@${ctx.host}`
-                                // helpMessage = context;
-                            })
-                            .catch((err) => {
-                                return Promise.reject(err);
-                            });
+     GetContext().then(
+        (context) => {
+            const ctx = JSON.parse(context);
+            const Version = ctx.version;
+            helpMessage = `Ready: ${ctx.id}@${ctx.host}`
+        })
+        .catch((err) => {
+            return Promise.reject(err);
+        });
     Environment().then((e) => {
         // helpMessage = JSON.stringify(e)
     })
