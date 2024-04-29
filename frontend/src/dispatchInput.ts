@@ -95,6 +95,22 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     return Promise.reject(dryRun ?  `ピザを注文する：〒${pizzaAddress}` : "😕「郵便番号を7桁の数字で入力してね」")
                 }
                 return executeOrDryRun(dryRun, `ピザを注文する：〒${pizzaAddress}`, pizzaCommand, pizzaAddress)
+            case "/set":
+                const setTarget = args.at(1) || "";
+                switch (setTarget) {
+                    case "f":
+                    case "footer":
+                        const footers = args.slice(2)
+                        return executeOrDryRun(dryRun, `フッターを設定する：${footers.join(" ")}`, Chikuwa, footers.join(" "))  // FIXME
+                }
+                return ""
+            case "/unset":
+                return ""
+            case "/quit":
+                return executeOrDryRun(dryRun, "沈没", () => {
+                    Quit();
+                    return Promise.resolve("沈没！");
+                });
             case "/mzsb":
                 const mzsbTarget = args.at(1) || "";
                 switch (mzsbTarget) {
@@ -104,11 +120,6 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     default:
                         return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${mzsbTarget}ってなに？」`)
                 }
-            case "/quit":
-                return executeOrDryRun(dryRun, "沈没", () => {
-                    Quit();
-                    return Promise.resolve("沈没！");
-                });
             default:
                 if (dryRun) {
                     return Promise.reject(WAIT_FOR_INPUT_MESSAGE);

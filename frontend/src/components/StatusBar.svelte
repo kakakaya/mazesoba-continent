@@ -2,15 +2,15 @@
     import CharCounter from "./CharCounter.svelte";
 
     export let helpMessage: string = "";
-    export let postFooter: string = "";
+    export let postFooters: Array<string> = [];
     export let charCount: number = 0;
     export let maxCount: number;
 </script>
 
 <div class="status-bar">
     <div class="message status-element">{helpMessage}</div>
-    <div class="footer">{postFooter}</div>    
-    <CharCounter count={charCount} maxCount={maxCount} hidden />
+    <div class="footer">{postFooters}</div>    
+    <CharCounter count={charCount} {maxCount} hidden />
 </div>
 
 <style>
