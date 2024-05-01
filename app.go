@@ -1,3 +1,5 @@
+// Types / Functions under app.go are intended to be used from frontend.
+
 package main
 
 import (
@@ -18,8 +20,6 @@ import (
 	"github.com/go-co-op/gocron/v2"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
-
-// Types / Functions under app.go are intended to be used from frontend.
 
 // App struct
 type App struct {
@@ -259,10 +259,10 @@ type AppContext struct {
 }
 
 func (a *App) GetContext() string {
-	// Return AppContext incred. Marshalized JSON
+	// Return AppContext in Marshalized JSON
 	// Intended to be used by the frontend.
 
-	// FIXME: This is a workaround to remove "http://" or "https://" from host until config change.
+	// FIXME: This is a workaround to remove "http://" or "https://" from host, until config change.
 	host := a.config.Credential.Host
 	// Remove "http://" or "https://" from host
 	host = strings.TrimPrefix(host, "http://")

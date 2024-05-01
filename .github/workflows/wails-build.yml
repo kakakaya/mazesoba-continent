@@ -21,10 +21,10 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'mazesoba-continent-linux'
+          - name: 'mazesoba-continent'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'mazesoba-continent-windows'
+          - name: 'mazesoba-continent.exe'
             platform:  'windows/amd64'
             os: 'windows-latest'
           - name: 'mazesoba-continent-macos'
