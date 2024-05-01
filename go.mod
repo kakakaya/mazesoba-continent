@@ -10,7 +10,7 @@ require (
 	github.com/adrg/xdg v0.4.0
 	github.com/bluesky-social/indigo v0.0.0-20240301203549-d06d65d92df6
 	github.com/gen2brain/beeep v0.0.0-20240112042604-c7bb2cd88fea
-	github.com/go-co-op/gocron/v2 v2.2.9
+	github.com/go-co-op/gocron/v2 v2.3.0
 	github.com/wailsapp/wails/v2 v2.8.1
 )
 
@@ -85,7 +85,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.20.0 // indirect
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
