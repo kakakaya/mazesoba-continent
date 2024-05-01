@@ -11,7 +11,7 @@ require (
 	github.com/bluesky-social/indigo v0.0.0-20240301203549-d06d65d92df6
 	github.com/gen2brain/beeep v0.0.0-20240112042604-c7bb2cd88fea
 	github.com/go-co-op/gocron/v2 v2.2.9
-	github.com/wailsapp/wails/v2 v2.8.0
+	github.com/wailsapp/wails/v2 v2.8.1
 )
 
 require (
