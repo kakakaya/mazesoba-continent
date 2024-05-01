@@ -1,3 +1,5 @@
+// Types / Functions under app.go are intended to be used from frontend.
+
 package main
 
 import (
@@ -251,14 +253,25 @@ type AppContext struct {
 	// AppContext is a struct that contains the context of the app.
 	// It can be used to marshalize the context to JSON.
 	// This struct is intended to be used by the frontend.
-	Version string `json:"version"`
+	Identifier string `json:"id"`
+	Host       string `json:"host"`
+	Version    string `json:"version"`
 }
 
 func (a *App) GetContext() string {
 	// Return AppContext in Marshalized JSON
 	// Intended to be used by the frontend.
+
+	// FIXME: This is a workaround to remove "http://" or "https://" from host, until config change.
+	host := a.config.Credential.Host
+	// Remove "http://" or "https://" from host
+	host = strings.TrimPrefix(host, "http://")
+	host = strings.TrimPrefix(host, "https://")
+
 	ac := AppContext{
-		Version: Version,
+		Version:    Version,
+		Identifier: a.config.Credential.Identifier,
+		Host:       host,
 	}
 	data, _ := json.Marshal(ac)
 	return string(data)
