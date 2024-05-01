@@ -5,7 +5,7 @@
         GetContext,
         Chikuwa,
     } from "../wailsjs/go/main/App";
-    import { Environment } from "../wailsjs/runtime"
+    import { Environment } from "../wailsjs/runtime";
     import InputBox from "./components/InputBox.svelte";
     import StatusBar from "./components/StatusBar.svelte";
 
@@ -28,22 +28,19 @@
     let postFooter = "";
     let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
-     GetContext().then(
-        (context) => {
+    GetContext()
+        .then((context) => {
             const ctx = JSON.parse(context);
             const Version = ctx.version;
-            helpMessage = `Ready: ${ctx.id}@${ctx.host}`
+            helpMessage = `Ready: ${ctx.id}@${ctx.host}`;
         })
         .catch((err) => {
             return Promise.reject(err);
         });
-    Environment().then((e) => {
-        // helpMessage = JSON.stringify(e)
-    })
 
     function clearText() {
         input = "";
-        charCount = 0;
+        charCount = -1;
         const inputBox = document.getElementById("inputbox");
         if (inputBox) {
             inputBox.removeAttribute("readonly");
@@ -55,7 +52,7 @@
         dispatchInput(input, true)
             .then((result) => {
                 if (/^\d+$/.test(result)) {
-                    // If input is usual message, 
+                    // If input is usual message,
                     charCount = parseInt(result);
                     helpMessage = "";
                 } else {
@@ -73,7 +70,6 @@
     function executeInput() {
         // Store current input value and clear input
         const currentInput = input;
-        charCount = -1;
         clearText();
         placeholder = "送信中...";
         dispatchInput(currentInput, false)
