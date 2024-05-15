@@ -50,6 +50,10 @@
         }
     }
 
+    function handleFooterChange(event: CustomEvent) {
+        // TODO
+    }
+
     function handleInput() {
         dispatchInput(input, true)
             .then((result) => {

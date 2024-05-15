@@ -101,11 +101,20 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     case "f":
                     case "footer":
                         const footers = args.slice(2)
-                        return executeOrDryRun(dryRun, `フッターを設定する：${footers.join(" ")}`, Chikuwa, footers.join(" "))  // FIXME
+                        return executeOrDryRun(dryRun, `フッターを設定する：${footers.join(" ")}`, () => , footers.join(" "))  // FIXME
+                    default:
+                        return Promise.reject(dryRun ? "設定する対象を入力：(footer)" : `😕「${setTarget}ってなに？」`)
                 }
                 return ""
-            case "/unset":
-                return ""
+            case "/reset":
+                const resetTarget = args.at(1) || "";
+                switch (resetTarget) {
+                    case "f":
+                    case "footer":
+                        return executeOrDryRun(dryRun, `フッターをリセットする`, () => , "")
+                    default:
+                        return Promise.reject(dryRun ? "リセットする対象を入力：(footer)" : `😕「${resetTarget}ってなに？」`)
+                }
             case "/quit":
                 return executeOrDryRun(dryRun, "沈没", () => {
                     Quit();
