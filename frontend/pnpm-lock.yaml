@@ -27,8 +27,8 @@ devDependencies:
     specifier: ^8.0.8
     version: 8.0.8(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
   '@storybook/svelte':
-    specifier: ^8.0.8
-    version: 8.0.8(svelte@4.2.15)
+    specifier: ^8.1.3
+    version: 8.1.3(prettier@3.2.5)(svelte@4.2.15)
   '@storybook/svelte-vite':
     specifier: ^8.0.8
     version: 8.0.8(@babel/core@7.24.4)(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.15)(typescript@5.4.5)(vite@5.2.11)
@@ -2157,6 +2157,16 @@ packages:
       tiny-invariant: 1.3.3
     dev: true
 
+  /@storybook/channels@8.1.3:
+    resolution: {integrity: sha512-iDoHFX3ty7vhSXegFRevJkQ6cV+QQ1JjDnoXK/SHeloMT26sn5gPtetn3ET9+6ZoFkU05Pf5d0DoywVOfumfcg==}
+    dependencies:
+      '@storybook/client-logger': 8.1.3
+      '@storybook/core-events': 8.1.3
+      '@storybook/global': 5.0.0
+      telejson: 7.2.0
+      tiny-invariant: 1.3.3
+    dev: true
+
   /@storybook/cli@8.0.8(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-RnSdgykh2i7es1rQ7CNGpDrKK/PN1f0xjwpkAHXCEB6T9KpHBmqDquzZp+N127a1HBHHXy018yi4wT8mSQyEoA==}
     hasBin: true
@@ -2209,6 +2219,12 @@ packages:
 
   /@storybook/client-logger@8.0.8:
     resolution: {integrity: sha512-a4BKwl9NLFcuRgMyI7S4SsJeLFK0LCQxIy76V6YyrE1DigoXz4nA4eQxdjLf7JVvU0EZFmNSfbVL/bXzzWKNXA==}
+    dependencies:
+      '@storybook/global': 5.0.0
+    dev: true
+
+  /@storybook/client-logger@8.1.3:
+    resolution: {integrity: sha512-dX1jZ+HhJ8hVhAKHQ8gs/FalHjIGo5j1Xk+2UqdsGjLoBlwHIHfHzkVbzrc/gCxxXL0juisk7BzbXaz7lME0KA==}
     dependencies:
       '@storybook/global': 5.0.0
     dev: true
@@ -2292,9 +2308,59 @@ packages:
       - supports-color
     dev: true
 
+  /@storybook/core-common@8.1.3(prettier@3.2.5):
+    resolution: {integrity: sha512-VLG2Kg6oX0msq/Gjo+Pveqg7oLnJBClzms43/nwh6oxjJ/TFehRi3DyLjLqL+Nj726LI5lQetFZZyrsHudVskg==}
+    peerDependencies:
+      prettier: ^2 || ^3
+    peerDependenciesMeta:
+      prettier:
+        optional: true
+    dependencies:
+      '@storybook/core-events': 8.1.3
+      '@storybook/csf-tools': 8.1.3
+      '@storybook/node-logger': 8.1.3
+      '@storybook/types': 8.1.3
+      '@yarnpkg/fslib': 2.10.3
+      '@yarnpkg/libzip': 2.3.0
+      chalk: 4.1.2
+      cross-spawn: 7.0.3
+      esbuild: 0.20.2
+      esbuild-register: 3.5.0(esbuild@0.20.2)
+      execa: 5.1.1
+      file-system-cache: 2.3.0
+      find-cache-dir: 3.3.2
+      find-up: 5.0.0
+      fs-extra: 11.2.0
+      glob: 10.3.12
+      handlebars: 4.7.8
+      lazy-universal-dotenv: 4.0.0
+      node-fetch: 2.7.0
+      picomatch: 2.3.1
+      pkg-dir: 5.0.0
+      prettier: 3.2.5
+      prettier-fallback: /prettier@3.2.5
+      pretty-hrtime: 1.0.3
+      resolve-from: 5.0.0
+      semver: 7.6.0
+      tempy: 1.0.1
+      tiny-invariant: 1.3.3
+      ts-dedent: 2.2.0
+      util: 0.12.5
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
   /@storybook/core-events@8.0.8:
     resolution: {integrity: sha512-PtuvR7vS4glDEdCfKB4f1k3Vs1C3rTWP2DNbF+IjjPhNLMBznCdzTAPcz+NUIBvpjjGnhKwWikJ0yj931YjSVg==}
     dependencies:
+      ts-dedent: 2.2.0
+    dev: true
+
+  /@storybook/core-events@8.1.3:
+    resolution: {integrity: sha512-eOs4HRrsEZz2FZFlMGwPuH9CGYBK8fkUS7mcHNPv8CqoHV8d3ErvDax8zA/KGRj3S6kWJ4PzI9IGuiDVvwuxhA==}
+    dependencies:
+      '@storybook/csf': 0.1.7
       ts-dedent: 2.2.0
     dev: true
 
@@ -2378,8 +2444,30 @@ packages:
       - supports-color
     dev: true
 
+  /@storybook/csf-tools@8.1.3:
+    resolution: {integrity: sha512-22h6Uv7w29v8HjoFsJvAkBci9POVH0aQhlfZ4NNYkiMbgD4X4HWeD2wqob6fTKpVWP3tDaNS9FfCWHxQXFE+ag==}
+    dependencies:
+      '@babel/generator': 7.24.4
+      '@babel/parser': 7.24.4
+      '@babel/traverse': 7.24.1
+      '@babel/types': 7.24.0
+      '@storybook/csf': 0.1.7
+      '@storybook/types': 8.1.3
+      fs-extra: 11.2.0
+      recast: 0.23.6
+      ts-dedent: 2.2.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@storybook/csf@0.1.3:
     resolution: {integrity: sha512-IPZvXXo4b3G+gpmgBSBqVM81jbp2ePOKsvhgJdhyZJtkYQCII7rg9KKLQhvBQM5sLaF1eU6r0iuwmyynC9d9SA==}
+    dependencies:
+      type-fest: 2.19.0
+    dev: true
+
+  /@storybook/csf@0.1.7:
+    resolution: {integrity: sha512-53JeLZBibjQxi0Ep+/AJTfxlofJlxy1jXcSKENlnKxHjWEYyHQCumMP5yTFjf7vhNnMjEpV3zx6t23ssFiGRyw==}
     dependencies:
       type-fest: 2.19.0
     dev: true
@@ -2400,6 +2488,23 @@ packages:
       lodash: 4.17.21
     transitivePeerDependencies:
       - encoding
+      - supports-color
+    dev: true
+
+  /@storybook/docs-tools@8.1.3(prettier@3.2.5):
+    resolution: {integrity: sha512-EQIgzO5KdvEck0/20lR/znq1xCC7O1HvKd+yIkZ4bEGn2XnqWk8rmReKSOMI476rb3sn1CMIntT2BRsBUOfTOw==}
+    dependencies:
+      '@storybook/core-common': 8.1.3(prettier@3.2.5)
+      '@storybook/core-events': 8.1.3
+      '@storybook/preview-api': 8.1.3
+      '@storybook/types': 8.1.3
+      '@types/doctrine': 0.0.3
+      assert: 2.1.0
+      doctrine: 3.0.0
+      lodash: 4.17.21
+    transitivePeerDependencies:
+      - encoding
+      - prettier
       - supports-color
     dev: true
 
@@ -2461,6 +2566,10 @@ packages:
     resolution: {integrity: sha512-ymps3MMTxtMWq0eDiXk1iO7iv0Eg0PuUvOpPPohEJauGzU9THv81xx01aaHKSprFFJYD2LMQr1aFuUplItO12g==}
     dev: true
 
+  /@storybook/node-logger@8.1.3:
+    resolution: {integrity: sha512-MpQ7Zl5n58zbFr1Yu3qgInGENoScEnfqsCxipMhj57b5SWJJ7NoOdSAWznjFFffo8NoaqxldHscuaQfzPBN9hA==}
+    dev: true
+
   /@storybook/preview-api@8.0.8:
     resolution: {integrity: sha512-khgw2mNiBrSZS3KNGQPzjneL3Csh3BOq0yLAtJpT7CRSrI/YjlE7jjcTkKzoxW+UCgvNTnLvsowcuzu82e69fA==}
     dependencies:
@@ -2470,6 +2579,25 @@ packages:
       '@storybook/csf': 0.1.3
       '@storybook/global': 5.0.0
       '@storybook/types': 8.0.8
+      '@types/qs': 6.9.14
+      dequal: 2.0.3
+      lodash: 4.17.21
+      memoizerific: 1.11.3
+      qs: 6.12.0
+      tiny-invariant: 1.3.3
+      ts-dedent: 2.2.0
+      util-deprecate: 1.0.2
+    dev: true
+
+  /@storybook/preview-api@8.1.3:
+    resolution: {integrity: sha512-2eyNVr5wLzglE7KABdXu4nu+rPjJ8gVDP9TiovgU1MHhE5rX8qbKmJ47ymWSfJT1DMvH2dPISh4/wRK3WVNjmw==}
+    dependencies:
+      '@storybook/channels': 8.1.3
+      '@storybook/client-logger': 8.1.3
+      '@storybook/core-events': 8.1.3
+      '@storybook/csf': 0.1.7
+      '@storybook/global': 5.0.0
+      '@storybook/types': 8.1.3
       '@types/qs': 6.9.14
       dequal: 2.0.3
       lodash: 4.17.21
@@ -2558,6 +2686,28 @@ packages:
       - supports-color
     dev: true
 
+  /@storybook/svelte@8.1.3(prettier@3.2.5)(svelte@4.2.15):
+    resolution: {integrity: sha512-0JgjH4MRL6x5wK+gPkD2srUSUWcPA3EHIhIT2Ko6Atwyn9UVEbW+KCvh70GG+q13ifN33Vam900tbpjvrG4PSA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      svelte: ^4.0.0 || ^5.0.0-next.65
+    dependencies:
+      '@storybook/client-logger': 8.1.3
+      '@storybook/core-events': 8.1.3
+      '@storybook/docs-tools': 8.1.3(prettier@3.2.5)
+      '@storybook/global': 5.0.0
+      '@storybook/preview-api': 8.1.3
+      '@storybook/types': 8.1.3
+      svelte: 4.2.15
+      sveltedoc-parser: 4.2.1
+      ts-dedent: 2.2.0
+      type-fest: 2.19.0
+    transitivePeerDependencies:
+      - encoding
+      - prettier
+      - supports-color
+    dev: true
+
   /@storybook/telemetry@8.0.8:
     resolution: {integrity: sha512-Uvj4nN01vQgjXZYKF/GKTFE85//Qm4ZTlJxTFWid+oYWc8NpAyJvlsJkj/dsEn4cLrgnJx2e4xvnx0Umr2ck+A==}
     dependencies:
@@ -2619,6 +2769,14 @@ packages:
     resolution: {integrity: sha512-NGsgCsXnWlaZmHenHDgHGs21zhweZACkqTNsEQ7hvsiF08QeiKAdgJLQg3YeGK73h9mFDRP9djprUtJYab6vnQ==}
     dependencies:
       '@storybook/channels': 8.0.8
+      '@types/express': 4.17.21
+      file-system-cache: 2.3.0
+    dev: true
+
+  /@storybook/types@8.1.3:
+    resolution: {integrity: sha512-2uUC1z7heMceRPHQ4KCcZwwKjtW2YiToUODsEw0YOq6NC/Q9elZta1FABSG0Bq7XM08EiAgjyc7P9CZPJ2QxUQ==}
+    dependencies:
+      '@storybook/channels': 8.1.3
       '@types/express': 4.17.21
       file-system-cache: 2.3.0
     dev: true
@@ -4574,6 +4732,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -6733,6 +6892,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -6747,6 +6907,7 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
