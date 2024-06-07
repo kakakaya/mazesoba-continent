@@ -1,15 +1,20 @@
 <script lang="ts">
     import CharCounter from "./CharCounter.svelte";
+    import { footers } from "../stores";
 
     export let helpMessage: string = "";
-    export let postFooters: Array<string> = [];
     export let charCount: number = 0;
     export let maxCount: number;
+
+    let footer_text = "";
+    footers.subscribe((value) => {
+        footer_text = value.join(" ");
+    });
 </script>
 
 <div class="status-bar">
     <div class="message status-element">{helpMessage}</div>
-    <div class="footer">{postFooters}</div>    
+    <div class="footer">{footer_text}</div>    
     <CharCounter count={charCount} {maxCount} hidden />
 </div>
 

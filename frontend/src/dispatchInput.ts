@@ -11,6 +11,8 @@ import {
     BrowserOpenURL, Quit,
 } from '../wailsjs/runtime/runtime.js'
 
+import { footers } from './stores.js'
+
 const WAIT_FOR_INPUT_MESSAGE = "..."
 
 export async function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
@@ -100,8 +102,12 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                 switch (setTarget) {
                     case "f":
                     case "footer":
-                        const footers = args.slice(2)
-                        return executeOrDryRun(dryRun, `フッターを設定する：${footers.join(" ")}`, () => , footers.join(" "))  // FIXME
+                        const newFooters = args.slice(2)
+                        return executeOrDryRun(dryRun, `フッターを追加する：${newFooters.join(" ")}`, () => {
+                            footers.set(newFooters);
+                            return Promise.resolve("追加しました");                        
+
+                        })  // FIXME
                     default:
                         return Promise.reject(dryRun ? "設定する対象を入力：(footer)" : `😕「${setTarget}ってなに？」`)
                 }
@@ -111,7 +117,10 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                 switch (resetTarget) {
                     case "f":
                     case "footer":
-                        return executeOrDryRun(dryRun, `フッターをリセットする`, () => , "")
+                        return executeOrDryRun(dryRun, `フッターをリセットする`, () => {
+                            footers.set([]);
+                            return Promise.resolve("リセットしました");
+                        });
                     default:
                         return Promise.reject(dryRun ? "リセットする対象を入力：(footer)" : `😕「${resetTarget}ってなに？」`)
                 }
