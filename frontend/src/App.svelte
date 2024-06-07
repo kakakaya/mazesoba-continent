@@ -25,10 +25,9 @@
 
     let input: string = "";
     let helpMessage = "Ready";
-    let postFooter = "";
     let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
-    let postFooters: Array<string> = [];
+
 
     GetContext()
         .then((context) => {
@@ -48,10 +47,6 @@
             inputBox.removeAttribute("readonly");
             inputBox.focus();
         }
-    }
-
-    function handleFooterChange(event: CustomEvent) {
-        // TODO
     }
 
     function handleInput() {
@@ -129,7 +124,7 @@
         on:input={handleInput}
         {placeholder}
     />
-    <StatusBar {postFooters} {helpMessage} {charCount} maxCount={300} />
+    <StatusBar {helpMessage} {charCount} maxCount={300} />
 </body>
 
 <style>
