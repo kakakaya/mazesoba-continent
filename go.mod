@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.5
 
 require (
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/PuerkitoBio/goquery v1.9.1
 	github.com/adrg/xdg v0.4.0
 	github.com/bluesky-social/indigo v0.0.0-20240301203549-d06d65d92df6
