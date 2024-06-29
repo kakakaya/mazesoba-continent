@@ -24,8 +24,8 @@ importers:
         specifier: ^8.0.8
         version: 8.0.8(react@18.2.0)
       '@storybook/addon-mdx-gfm':
-        specifier: ^8.0.8
-        version: 8.0.8
+        specifier: ^8.1.11
+        version: 8.1.11
       '@storybook/blocks':
         specifier: ^8.0.8
         version: 8.0.8(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1061,8 +1061,8 @@ packages:
       react:
         optional: true
 
-  '@storybook/addon-mdx-gfm@8.0.8':
-    resolution: {integrity: sha512-Dpr76rbR5wBVxvJ/Rz8yFhCbGk685TQhTCKG1htZLhriRfhYMrzl5LFZti4gdbvJoutlMmygyV2LNfsWeHOcTQ==}
+  '@storybook/addon-mdx-gfm@8.1.11':
+    resolution: {integrity: sha512-0/4Xaisvmoi26iK1ezTOB9dN2b0JbgWKzO2PO6att2Jh7lplLCf1QeoE8Y4SgCh0brage+mA8mKI8NrT7d18pg==}
 
   '@storybook/addon-measure@8.0.8':
     resolution: {integrity: sha512-akyoa+1F2ripV6ELF2UbxiSHv791LWSAVK7gsD/a5eJfKZMm5yoHjcY7Icdkc/ctE+pyjAQNhkXTixUngge09w==}
@@ -5272,9 +5272,9 @@ snapshots:
     optionalDependencies:
       react: 18.2.0
 
-  '@storybook/addon-mdx-gfm@8.0.8':
+  '@storybook/addon-mdx-gfm@8.1.11':
     dependencies:
-      '@storybook/node-logger': 8.0.8
+      '@storybook/node-logger': 8.1.11
       remark-gfm: 4.0.0
       ts-dedent: 2.2.0
     transitivePeerDependencies:
