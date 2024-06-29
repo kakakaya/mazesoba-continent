@@ -103,9 +103,9 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     case "f":
                     case "footer":
                         const newFooters = args.slice(2)
-                        return executeOrDryRun(dryRun, `フッターを追加する：${newFooters.join(" ")}`, () => {
+                        return executeOrDryRun(dryRun, `フッターを設定する：${newFooters.join(" ")}`, () => {
                             footers.set(newFooters);
-                            return Promise.resolve("追加しました");                        
+                            return Promise.resolve("フッターを設定しました");                        
 
                         })  // FIXME
                     default:
@@ -119,7 +119,7 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     case "footer":
                         return executeOrDryRun(dryRun, `フッターをリセットする`, () => {
                             footers.set([]);
-                            return Promise.resolve("リセットしました");
+                            return Promise.resolve("aフッターをリセットしました");
                         });
                     default:
                         return Promise.reject(dryRun ? "リセットする対象を入力：(footer)" : `😕「${resetTarget}ってなに？」`)
