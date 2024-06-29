@@ -11,6 +11,8 @@ import {
     BrowserOpenURL, Quit,
 } from '../wailsjs/runtime/runtime.js'
 
+import { footers } from './stores.js'
+
 const WAIT_FOR_INPUT_MESSAGE = "..."
 
 export async function dispatchInput(input: string, dryRun: boolean = false): Promise<string> {
@@ -95,6 +97,38 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     return Promise.reject(dryRun ?  `ピザを注文する：〒${pizzaAddress}` : "😕「郵便番号を7桁の数字で入力してね」")
                 }
                 return executeOrDryRun(dryRun, `ピザを注文する：〒${pizzaAddress}`, pizzaCommand, pizzaAddress)
+            case "/set":
+                const setTarget = args.at(1) || "";
+                switch (setTarget) {
+                    case "f":
+                    case "footer":
+                        const newFooters = args.slice(2)
+                        return executeOrDryRun(dryRun, `フッターを設定する：${newFooters.join(" ")}`, () => {
+                            footers.set(newFooters);
+                            return Promise.resolve("フッターを設定しました");                        
+
+                        })  // FIXME
+                    default:
+                        return Promise.reject(dryRun ? "設定する対象を入力：(footer)" : `😕「${setTarget}ってなに？」`)
+                }
+                return ""
+            case "/reset":
+                const resetTarget = args.at(1) || "";
+                switch (resetTarget) {
+                    case "f":
+                    case "footer":
+                        return executeOrDryRun(dryRun, `フッターをリセットする`, () => {
+                            footers.set([]);
+                            return Promise.resolve("aフッターをリセットしました");
+                        });
+                    default:
+                        return Promise.reject(dryRun ? "リセットする対象を入力：(footer)" : `😕「${resetTarget}ってなに？」`)
+                }
+            case "/quit":
+                return executeOrDryRun(dryRun, "沈没", () => {
+                    Quit();
+                    return Promise.resolve("沈没！");
+                });
             case "/mzsb":
                 const mzsbTarget = args.at(1) || "";
                 switch (mzsbTarget) {
@@ -104,11 +138,6 @@ export async function dispatchInput(input: string, dryRun: boolean = false): Pro
                     default:
                         return Promise.reject(dryRun ? WAIT_FOR_INPUT_MESSAGE : `😕「${mzsbTarget}ってなに？」`)
                 }
-            case "/quit":
-                return executeOrDryRun(dryRun, "沈没", () => {
-                    Quit();
-                    return Promise.resolve("沈没！");
-                });
             default:
                 if (dryRun) {
                     return Promise.reject(WAIT_FOR_INPUT_MESSAGE);

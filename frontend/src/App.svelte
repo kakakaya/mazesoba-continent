@@ -25,9 +25,10 @@
 
     let input: string = "";
     let helpMessage = "Ready";
-    let postFooter = "";
     let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
+
+
     GetContext()
         .then((context) => {
             const ctx = JSON.parse(context);
@@ -123,7 +124,7 @@
         on:input={handleInput}
         {placeholder}
     />
-    <StatusBar {postFooter} {helpMessage} {charCount} maxCount={300} />
+    <StatusBar {helpMessage} {charCount} maxCount={300} />
 </body>
 
 <style>
