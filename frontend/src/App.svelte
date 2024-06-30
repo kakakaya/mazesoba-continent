@@ -5,6 +5,7 @@
         GetContext,
         Chikuwa,
     } from "../wailsjs/go/main/App";
+    import { Environment } from "../wailsjs/runtime";
     import InputBox from "./components/InputBox.svelte";
     import StatusBar from "./components/StatusBar.svelte";
 
@@ -24,13 +25,23 @@
 
     let input: string = "";
     let helpMessage = "Ready";
-    let postFooter = "";
     let charCount = 0;
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
 
+
+    GetContext()
+        .then((context) => {
+            const ctx = JSON.parse(context);
+            const Version = ctx.version;
+            helpMessage = `Ready: ${ctx.id}@${ctx.host}`;
+        })
+        .catch((err) => {
+            return Promise.reject(err);
+        });
+
     function clearText() {
         input = "";
-        charCount = 0;
+        charCount = -1;
         const inputBox = document.getElementById("inputbox");
         if (inputBox) {
             inputBox.removeAttribute("readonly");
@@ -42,15 +53,17 @@
         dispatchInput(input, true)
             .then((result) => {
                 if (/^\d+$/.test(result)) {
+                    // If input is usual message,
                     charCount = parseInt(result);
                     helpMessage = "";
                 } else {
-                    charCount = 0;
+                    // Otherwise hide CharCounter and show help
+                    charCount = -1;
                     helpMessage = result;
                 }
             })
             .catch((error) => {
-                charCount = 0;
+                charCount = -1;
                 helpMessage = error;
             });
     }
@@ -111,7 +124,7 @@
         on:input={handleInput}
         {placeholder}
     />
-    <StatusBar {postFooter} {helpMessage} {charCount} maxCount={300} />
+    <StatusBar {helpMessage} {charCount} maxCount={300} />
 </body>
 
 <style>
