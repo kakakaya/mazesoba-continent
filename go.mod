@@ -7,7 +7,7 @@ toolchain go1.21.5
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/PuerkitoBio/goquery v1.9.1
-	github.com/adrg/xdg v0.4.0
+	github.com/adrg/xdg v0.5.0
 	github.com/bluesky-social/indigo v0.0.0-20240301203549-d06d65d92df6
 	github.com/gen2brain/beeep v0.0.0-20240112042604-c7bb2cd88fea
 	github.com/go-co-op/gocron/v2 v2.11.0
@@ -87,7 +87,7 @@ require (
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	lukechampine.com/blake3 v1.2.1 // indirect
