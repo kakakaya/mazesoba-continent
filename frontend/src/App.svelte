@@ -9,16 +9,17 @@
     import InputBox from "./components/InputBox.svelte";
     import StatusBar from "./components/StatusBar.svelte";
 
-    // import {
-    //     EventsOn,
-    //     EventsEmit,
-    //     WindowCenter,
-    //     WindowHide,
-    //     WindowShow,
-    //     Quit,
-    //     LogInfo,
-    //     LogWarning,
-    // } from "../wailsjs/runtime/runtime";
+    import {
+        EventsOn,
+        EventsEmit,
+        WindowCenter,
+        WindowHide,
+        WindowShow,
+        Quit,
+        LogInfo,
+        LogWarning,
+        OnFileDrop,
+    } from "../wailsjs/runtime/runtime";
     import { dispatchInput } from "./dispatchInput.js";
 
     import { ConvertRichUnicode } from "./topping/unicode";
@@ -38,6 +39,11 @@
         .catch((err) => {
             return Promise.reject(err);
         });
+
+    OnFileDrop((_x, _y, paths) => {
+        LogInfo(`Dropped: ${paths}`);
+        EventsEmit("filedrop", paths);
+    }, true);
 
     function clearText() {
         input = "";
@@ -130,6 +136,7 @@
 <style>
     body {
         --wails-draggable: drag;
+        --wails-drop-target: drop;
         background-color: rgba(27, 38, 54, 0.5);
         height: 100vh;
         width: 100vw;
