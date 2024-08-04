@@ -18,6 +18,8 @@ import (
 	"github.com/bluesky-social/indigo/xrpc"
 	"github.com/gen2brain/beeep"
 	"github.com/go-co-op/gocron/v2"
+	"github.com/h2non/bimg"
+
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -129,14 +131,41 @@ func NewHttpClient() *http.Client {
 	}
 }
 
+func (a *App) UploadImage(path string) ([]byte, error) {
+	// Upload image	to the server.
+
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	img, err := io.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	img, err = bimg.NewImage(img).Process(bimg.Options{StripMetadata: true})
+	if err != nil {
+		return nil, err
+	}
+	res, err := BskyUploadBlob(a.xrpcc, img)
+	if err != nil {
+		return nil, err
+	}
+	a.logger.Info("Uploaded image", "result", res, "ref", res.Blob.Ref, "mimetype", res.Blob.MimeType, "size", res.Blob.Size)
+
+	// BskyFeedPost(a.xrpcc, "Uploaded image", []util.LexBlob{{Ref: res.Blob.Ref, MimeType: res.Blob.MimeType, Size: res.Blob.Size}})
+	return res.Blob.MarshalJSON()
+}
+
 func (a *App) Post(text string) string {
 	a.logger.Info("Post", "text", text)
-	beeep.Notify("まぜそば大陸", fmt.Sprintf("BskyFeedPost: %s", text), "")
+	beeep.Notify("まぜそば大陸", fmt.Sprintf("Post: %s", text), "")
 
 	if a.environment.BuildType == "dev" {
 		return "<MOCK URI>"
 	}
-	res, err := BskyFeedPost(a.xrpcc, text)
+	res, err := BskyFeedPost(a.xrpcc, text, nil)
 	if err != nil {
 		errs := fmt.Sprintf("Posting error: %s", err.Error())
 		a.logger.Error("Post: Error on BskyFeedPost", "error", errs)
