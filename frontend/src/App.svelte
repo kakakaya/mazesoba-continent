@@ -4,28 +4,33 @@
         OpenLogDirectory,
         GetContext,
         Chikuwa,
+        UploadImage,
+        Post,
     } from "../wailsjs/go/main/App";
     import { Environment } from "../wailsjs/runtime";
     import InputBox from "./components/InputBox.svelte";
     import StatusBar from "./components/StatusBar.svelte";
 
-    // import {
-    //     EventsOn,
-    //     EventsEmit,
-    //     WindowCenter,
-    //     WindowHide,
-    //     WindowShow,
-    //     Quit,
-    //     LogInfo,
-    //     LogWarning,
-    // } from "../wailsjs/runtime/runtime";
+    import {
+        EventsOn,
+        EventsEmit,
+        WindowCenter,
+        WindowHide,
+        WindowShow,
+        Quit,
+        LogInfo,
+        LogWarning,
+        OnFileDrop,                 
+    } from "../wailsjs/runtime/runtime";
     import { dispatchInput } from "./dispatchInput.js";
 
     import { ConvertRichUnicode } from "./topping/unicode";
 
+    struct : {}
     let input: string = "";
+    let images
     let helpMessage = "Ready";
-    let charCount = 0;
+    let charCount = 0;  // -1 to hide CharCounter           
     let placeholder = Math.random() > 0.5 ? "最近どう？" : "どう最近？";
 
 
@@ -38,6 +43,33 @@
         .catch((err) => {
             return Promise.reject(err);
         });
+
+    OnFileDrop((_x, _y, paths) => {
+        LogInfo(`Dropped: ${paths}, ${_x}, ${_y}`);
+        placeholder = '[' + paths.join(", ") + ']';
+        input = paths.join(", ");
+        let foo = '';
+        UploadImage(paths[0])
+            .then((result) => {
+                // result is base64 encoded, so decode it.
+                LogInfo(result)
+                foo = result;
+                result = atob(result);
+                LogInfo(result)
+                input = result;
+            })
+            .catch((error) => {
+                helpMessage = `Error: ${error}`;
+            });
+        PostWithImage(input, foo)
+            .then((result) => {
+                placeholder = result;
+            })
+            .catch((error) => {
+                helpMessage = `Error: ${error}`;
+            });
+        LogInfo('ende')
+    }, true);
 
     function clearText() {
         input = "";
@@ -130,6 +162,7 @@
 <style>
     body {
         --wails-draggable: drag;
+        --wails-drop-target: drop;
         background-color: rgba(27, 38, 54, 0.5);
         height: 100vh;
         width: 100vw;
