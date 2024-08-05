@@ -25,7 +25,7 @@
     "@storybook/test": "^8.2.6",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
-    "@vitest/coverage-v8": "^2.0.4",
+    "@vitest/coverage-v8": "^2.0.5",
     "storybook": "^8.2.6",
     "svelte": "^4.2.18",
     "svelte-check": "^3.8.4",
@@ -33,6 +33,6 @@
     "tslib": "^2.6.3",
     "typescript": "^5.5.4",
     "vite": "^5.3.5",
-    "vitest": "^2.0.4"
+    "vitest": "^2.0.5"
   }
 }
