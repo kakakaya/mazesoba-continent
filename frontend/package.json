@@ -23,7 +23,7 @@
     "@storybook/svelte": "^8.2.6",
     "@storybook/svelte-vite": "^8.2.6",
     "@storybook/test": "^8.2.6",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tsconfig/svelte": "^5.0.4",
     "@vitest/coverage-v8": "^2.0.4",
     "storybook": "^8.2.6",
