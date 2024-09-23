@@ -11,7 +11,7 @@ require (
 	github.com/bluesky-social/indigo v0.0.0-20240301203549-d06d65d92df6
 	github.com/gen2brain/beeep v0.0.0-20240112042604-c7bb2cd88fea
 	github.com/go-co-op/gocron/v2 v2.11.0
-	github.com/wailsapp/wails/v2 v2.9.1
+	github.com/wailsapp/wails/v2 v2.9.2
 )
 
 require (
@@ -74,7 +74,7 @@ require (
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	github.com/wailsapp/go-webview2 v1.0.10 // indirect
+	github.com/wailsapp/go-webview2 v1.0.16 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	github.com/whyrusleeping/cbor-gen v0.0.0-20240201211319-bf2168ca937c // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.46.1 // indirect
