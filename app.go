@@ -18,7 +18,6 @@ import (
 	"github.com/bluesky-social/indigo/xrpc"
 	"github.com/gen2brain/beeep"
 	"github.com/go-co-op/gocron/v2"
-	"github.com/h2non/bimg"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -144,7 +143,7 @@ func (a *App) UploadImage(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	img, err = bimg.NewImage(img).Process(bimg.Options{StripMetadata: true})
+
 	if err != nil {
 		return nil, err
 	}
