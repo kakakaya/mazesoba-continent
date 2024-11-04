@@ -10,7 +10,7 @@ require (
 	github.com/adrg/xdg v0.5.0
 	github.com/bluesky-social/indigo v0.0.0-20241008040750-06bacb465af7
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
-	github.com/go-co-op/gocron/v2 v2.12.1
+	github.com/go-co-op/gocron/v2 v2.12.3
 	github.com/wailsapp/wails/v2 v2.9.2
 )
 
