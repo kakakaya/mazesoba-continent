@@ -18,3 +18,5 @@ export function PostAndForget(arg1:string):Promise<void>;
 export function SetScheduler():Promise<void>;
 
 export function SetXRPCClient():Promise<void>;
+
+export function UploadImage(arg1:string):Promise<Array<number>>;

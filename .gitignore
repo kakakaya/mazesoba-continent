@@ -18,3 +18,5 @@ node_modules
 /build/windows/installer/tmp/
 
 *storybook.log
+# Vitest coverage cache
+/frontend/coverage

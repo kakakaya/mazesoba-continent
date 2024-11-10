@@ -72,7 +72,15 @@ func addLink(xrpcc *xrpc.Client, post *bsky.FeedPost, link string) {
 	}
 }
 
-func BskyFeedPost(xrpcc *xrpc.Client, text string) (string, error) {
+func BskyUploadBlob(xrpcc *xrpc.Client, b []byte) (*comatproto.RepoUploadBlob_Output, error) {
+	resp, err := comatproto.RepoUploadBlob(context.TODO(), xrpcc, bytes.NewReader(b))
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload blob: %w", err)
+	}
+	return resp, nil
+}
+
+func BskyFeedPost(xrpcc *xrpc.Client, text string, images []lexutil.LexBlob) (string, error) {
 	// Post given text to Bluesky, with app.bsky.feed.post.
 	if text == "" || strings.TrimSpace(text) == "" {
 		return "", fmt.Errorf("no text specified")
@@ -141,6 +149,20 @@ func BskyFeedPost(xrpcc *xrpc.Client, text string) (string, error) {
 		})
 	}
 
+	if len(images) > 0 {
+		var imageRefs []*bsky.EmbedImages_Image
+		for _, image := range images {
+			imageRefs = append(imageRefs, &bsky.EmbedImages_Image{
+				Image: &image,
+			})
+		}
+		if post.Embed == nil {
+			post.Embed = &bsky.FeedPost_Embed{}
+		}
+		post.Embed.EmbedImages = &bsky.EmbedImages{
+			Images: imageRefs,
+		}
+	}
 	resp, err := comatproto.RepoCreateRecord(context.TODO(), xrpcc, &comatproto.RepoCreateRecord_Input{
 		Collection: "app.bsky.feed.post",
 		Repo:       xrpcc.Auth.Did,

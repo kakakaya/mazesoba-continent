@@ -37,3 +37,7 @@ export function SetScheduler() {
 export function SetXRPCClient() {
   return window['go']['main']['App']['SetXRPCClient']();
 }
+
+export function UploadImage(arg1) {
+  return window['go']['main']['App']['UploadImage'](arg1);
+}
