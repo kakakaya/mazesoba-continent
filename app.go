@@ -62,6 +62,22 @@ func (a *App) startup(ctx context.Context) {
 
 	err := a.SetXRPCClient()
 	if err != nil {
+		result, dialogErr := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:          runtime.QuestionDialog,
+			Title:         "認証に失敗したよ",
+			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードとインターネット接続を確認してね。\n設定ファイルの場所を開く？", a.config.Credential.Host),
+			DefaultButton: "Yes",
+		})
+
+		if dialogErr != nil {
+			a.logger.Warn("Error creds not set dialog", "error", dialogErr)
+		}
+		a.logger.Info(result)
+		if dialogResults[strings.ToLower(result)] {
+			a.OpenConfigDirectory()
+		}
+
+		a.logger.Warn("Failed creating session, bad identifier or password?", "error", err)
 		runtime.Quit(ctx)
 	}
 
@@ -187,29 +203,12 @@ func (a *App) SetXRPCClient() error {
 			a.OpenConfigDirectory()
 		}
 		a.logger.Warn("Missing credentials")
-		return fmt.Errorf("Couldn't load valid credentials.")
+		return fmt.Errorf("couldn't load valid credentials")
 	}
 
 	auth, authErr := createSession(cred.Host, cred.Identifier, cred.Password)
 
 	if authErr != nil {
-		// If auth failed,
-		result, dialogErr := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:          runtime.QuestionDialog,
-			Title:         "認証に失敗したよ",
-			Message:       fmt.Sprintf("%sへの認証に失敗しました。\nIDとパスワードとインターネット接続を確認してね。\n設定ファイルの場所を開く？", cred.Host),
-			DefaultButton: "Yes",
-		})
-
-		if dialogErr != nil {
-			a.logger.Warn("Error creds not set dialog", "error", dialogErr)
-		}
-		a.logger.Info(result)
-		if dialogResults[strings.ToLower(result)] {
-			a.OpenConfigDirectory()
-		}
-
-		a.logger.Warn("Failed creating session, bad identifier or password?", "error", authErr)
 		return authErr
 	}
 
@@ -219,7 +218,7 @@ func (a *App) SetXRPCClient() error {
 		Auth:   auth,
 	}
 	a.xrpcc = xrpcc
-	a.logger.Info("Set XRPCC succeeded.")
+	a.logger.Info("set or update XRPCC succeeded.")
 	return nil
 }
 
