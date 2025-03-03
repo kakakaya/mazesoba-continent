@@ -6,7 +6,7 @@ toolchain go1.23.2
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/PuerkitoBio/goquery v1.10.1
+	github.com/PuerkitoBio/goquery v1.10.2
 	github.com/adrg/xdg v0.5.3
 	github.com/bluesky-social/indigo v0.0.0-20250210222343-ae849136c999
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
